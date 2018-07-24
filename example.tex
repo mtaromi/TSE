@@ -1,0 +1,33 @@
+%
+% 	Example
+%
+\label{sec:running-example}
+To illustrate the framework and the testing activities, e.g., creating and preparing test models, we use a simple library system throughout the paper. 
+
+In this system, a book has a unique name and there is only one copy of each book. Each member can borrow at most two books at any time. We identify (and use) six use cases for the system:
+\begin{enumerate}
+	\item Add Book 
+	\begin{itemize}
+		\item  Input: book name
+		\item Pre-condition(s): the name should not be empty and redundant.
+	\end{itemize}
+
+	\item Add Member
+	
+	\item Borrow Book
+	\begin{itemize}
+		\item Pre-condition(s): the book should be free to borrow and the member has not exceeded the limitation.
+	\end{itemize}
+
+	\item Return Book
+	
+	\item Delete Book
+	\begin{itemize}
+		\item Pre-condition(s): the book should be free (not borrowed).
+	\end{itemize}
+
+	\item Delete Member
+	\begin{itemize}
+		\item Pre-condition(s): the member should not have any borrowed book.
+	\end{itemize}
+\end{enumerate}

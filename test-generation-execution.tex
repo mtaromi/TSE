@@ -1,0 +1,175 @@
+%
+% 	Farmework in Action: Test Generation and Execution
+%
+\label{sec:test-generation-execution}
+Previous section introduces the test models, required by the testing framework, and explaines how they are created or defined by a tester. This section explains the test generation and execution. The testing framework has been built upon Alloy~\cite{Jackson2002} and the Alloy Analyser (AA)~\cite{Jackson2000} with the aim of testing a system at the use case level (i.e.,\ acceptance testing). AA provides automatic analysis of Alloy specifications by generating instances that satisfy the constraints expressed in the specification.
+
+The key idea behind the framework is to use Alloy to express the structural and behavioural model of the system specifying the use cases, the invariants of inputs and outputs, pre-/post-conditions for executing use cases on the system under test. In this context, all the test models, introduced in the previous section, are automatically translated into Alloy specifications which are then used by AA to automatically generate, for a given scope, all non-isomorphic~\cite{Shlyakhter2007} instances for that specification. Next, the testing framework uses reflection to translate these instances to real execution paths and concrete inputs, which form the test cases for the SUT.
+
+In the following, we first describe the basics of the Alloy specification language and the Alloy Analyser; details can be found in~\cite{Jackson2000,Jackson2002,Jackson2012}. Then, we explain the model transformations into Alloy.
+
+\subsection{Alloy}
+\label{sec:test-generation-execution-alloy}
+Alloy is a strongly typed language that assumes a universe of atoms partitioned into subsets, each of which is associated with a basic type. An Alloy specification is a sequence of paragraphs that can be of two kinds: signatures, used for construction of new \textit{types}, and a variety of formula paragraphs, used to record \textit{constraints}. Each specification starts with a \texttt{module} declaration that names the specification.%; existing specifications may be included in the current one using \texttt{open} declarations.
+
+A \textit{signature} paragraph represents a basic (or uninterpreted) type and introduces an independent top-level sets. A signature declaration may include a collection of relations (that are called \textit{fields}) in it along with the types of the fields and constraints on their values; a \textit{field} represents a set relation between the signatures. \textit{Formula} paragraphs are formed from Alloy expressions, specifying the constraints on the desired solutions, such as \textit{facts} and \textit{assertions}. A \texttt{fact} is a formula that takes no arguments and need not be invoked explicitly; it is always true. An assertion (\texttt{assert}) is a formula whose correctness needs to be checked, assuming the facts in the model. 
+
+Fig.~\ref{fig:alloy-example-list} shows a simple alloy model for Linked List. The model defines two signature: \texttt{List} and \texttt{Node}. The \texttt{List} signature has a field called \textit{header} showing the first element on the list. Line 9-12 defines the facts on linked lists, indicating that all \textit{Nodes} are either the first element in a list or accessible by traversing the \texttt{next} field on a list. In this declaration, ``+" , ``.", and ``\^{}" are, respectively, operators for set union, relational composition, and transitive closure. Line 11 says that linked list do not have a cycle. Lines 14-16 indicate that there is at least one linked list in the solutions. Finally, in line 18, the main predicate used for finding the solutions, along with the search scope, is specified. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{../Figures/alloy-example-list.png}
+\caption{Example Alloy model of Linked List.}
+\label{fig:alloy-example-list}
+\end{figure}
+
+The Alloy Analyser~\cite{Jackson2000} is an automatic tool for analysing models created in Alloy. Given a formula and a \textit{scope}--abound on the number of atoms in the universe--the analyser determines whether there exists a model of the formula (that is, an assignment of values to the sets and relations that makes the formula true) that uses no more atoms than the scope permits, and if so, returns it. Since first order logic is undecidable, the analyser limits its analysis to a finite scope. The analysis is based on a translation to a boolean satisfaction problem, and gains its power by exploiting state-of-the-art SAT solvers. The models of formulae are termed \textit{instances} or \textit{solutions}. For the example alloy model in Fig.~\ref{fig:alloy-example-list} with the given scope, there are seven solutions shown in Fig.~\ref{fig:alloy-example-list-solutions}. Each atom is in a signature and the relations between atoms are instances of their fields.
+
+\begin{figure*}[h]
+\centering
+\includegraphics[width=\textwidth]{../Figures/alloy-example-list-solutions.png}
+\caption{Solutions for the example Alloy model of Linked List.}
+\label{fig:alloy-example-list-solutions}
+\end{figure*}
+
+\subsection{Generated Alloy Model}
+\label{sec:test-generation-execution-alloy-models}
+The test models, created/defined by testers, are automatically translated into Alloy specifications consisting of six \texttt{modules}, that are defined in separate Alloy files. The modules and their dependencies are shown in Fig.~\ref{fig:alloy-specifications}, and include:
+
+\begin{enumerate}
+	\item \texttt{system\_def\_auto}: translation of the domain structural model (EMF diagram),
+	\item \texttt{operations\_def\_auto}: translation of the system behavioural model (use case descriptions) and definition of the labels,
+	\item \texttt{rules\_def\_auto}: translation of the object labels rules
+	\item \texttt{init\_def\_auto}: translation of the initial state model, 
+	\item \texttt{input\_def\_auto}: translation of the input partitionings, and
+	\item \texttt{main}: the main module specifying the test goals and the entry point for the static analysis (i.e.,\ the starting predicate).
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{../Figures/alloy-specifications.png}
+\caption{Generated Alloy specifications and their dependencies.}
+\label{fig:alloy-specifications}
+\end{figure}
+
+In the rest of this section, the details of model transformation for each module is described.
+
+\subsection{Structure Model}
+\label{sec:alloy-structure}
+The EMF model of the system is automatically translated into an Alloy specification, using the Xpand\footnote{Xpand – \url{http://eclipse.org/modeling/m2t/?project=xpand}} model-to-text transformation language. Fig.~\ref{fig:library-alloy-structure} shows the automatically generated Alloy specification for the structure of the example library system. Each class is translated into a signature within which each association is represented by a field (lines 9-11 and lines 17-19). The multiplicity of a relation affects the definition of the fields. Abstract signatures are used for modelling abstract classes, and for modelling inheritance, the same concept in Alloy is used.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-structure.png}
+\caption{Alloy specification of the structure of the example library system.}
+\label{fig:library-alloy-structure}
+\end{figure}
+
+%\subsubsection{State}
+%\label{sec:alloy-state}
+Alloy does not have a built in notion of state mutation; it does not allow to change the relationships, whereas, in the context of testing, the domain model would be changed because of executing the use cases. Consequently, the concept of changing state has to be explicitly define in the Alloy specification. Doing so, the \texttt{state} signature is defined and all the relations that would change during test executions, are in a relation with an atom of this signature. This is shown by putting the \texttt{-> State} extension at the end of the changing relations.
+
+The \texttt{System} signature represents the system under test and keeps the objects that are in the domain model at any time. It defines a field for each concrete class in the domain model (e.g.,\ Fig.~\ref{fig:library-alloy-structure}, lines 1-4).
+
+Object labels are modelled by the \texttt{DomainObjState} abstract signature, such that for each domain class, an abstract signature that extends \texttt{DomainObjState} and shows the labels for that class, is defined (e.g.,\ lines 15-19). Additionally, all the signature for the domain classes are inherited from the \texttt{DomainObj} abstract signature which contains the field defining the relation between atoms and their labels.
+
+In order to confine the state space and prevent useless solutions, for testing, the objects that are not in the domain model can not be participated in relations and can not have label atoms. This is specified as a \texttt{fact} at the end of the structural Alloy specification. The fact for the example library system is depicted in Fig.~\ref{fig:library-alloy-structure-fact}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{../Figures/library-alloy-structure-fact.png}
+\caption{The \texttt{fact} for confining the state space in the structure model of the example library system.}
+\label{fig:library-alloy-structure-fact}
+\end{figure}
+
+
+\subsection{Operations: Use Cases}
+\label{sec:alloy-usecases}
+The next step is to translate the use case description into Alloy. Basically, each use case is translated into a corresponding signature and a predicate. The signature is used for 1) tracing the execution flow: a solution does not show which predicate in the specification has resulted in the solution. Whereas, the test driver needs to know which predicate has been selected in any state. Thus, by using \textit{conjunction}, an atom of the signature is attached to each predicate, so that it is possible to trace the execution flow, and 2) a use case signature consists of fields corresponding to its parameters. The signature for the ``Return Book" use case is depicted in Fig.~\ref{fig:library-alloy-return-book-signature}. Lines 5-8 are for confining the state space.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-return-book-signature.png}
+\caption{The signature for the ``Return Book" use case.}
+\label{fig:library-alloy-return-book-signature}
+\end{figure}
+
+The corresponding predicate for each use case, takes the atoms of the previous and subsequent states, and an atom of the signature of the use case, and defines the constraints for creating the subsequent state. The predicate for the ``Return Book" use case is shown in Fig.~\ref{fig:library-alloy-return-book-predicate}. This predicate consists of the following parts: defining the domain of the input parameters (lines 2-5), defining pre-conditions (lines 6-10), specifying the frame conditions (lines 11-20), defining the post-conditions (lines 21-24). 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-return-book-predicate.png}
+\caption{The predicate for the ``Return Book" use case.}
+\label{fig:library-alloy-return-book-predicate}
+\end{figure}
+
+The predicate of a use case may also contains a part for defining variables (by using the \textbf{let} structure) and a part for creating new objects, when new objects are added to the domain model. An example of these parts are depicted in Fig.~\ref{fig:library-alloy-add-member-predicate} showing the predicate for the ``Add Member" use case. New objects are chosen such that  choosing a new object does not result in different solutions by Alloy, which is done by defining a total order on the signatures for all classes. At any time, the smallest atom that does not exist in the domain is returned as the new object (line 2).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-add-member-predicate.png}
+\caption{The predicate for the ``Add Member" use case.}
+\label{fig:library-alloy-add-member-predicate}
+\end{figure}
+
+In addition to the corresponding predicate, a negative predicate with the \textbf{fail\_} prefix is generated in order to test the exceptions in the system. The predicate is similar to the main predicate except that it does not define the post-conditions and the new objects parts. It does not make any change in the domain model and only works on its pre-conditions (that are the negative of the original pre-conditions).
+
+Additionally, it is possible to define different execution paths for a use case. In this case, an abstract signature is defined for the use case and for each execution path a concrete signature is defined. 
+
+\subsection{Initial State}
+\label{sec:alloy-initial-state}
+For transforming the initial state model, defined in the introduced DSL in Section~\ref{sec:subsidiary-models-initial-state}, into Alloy a specification, the size of the field are specified. Also, for simplifying the solution space, the smallest possible object in the initial state is defined. Fig.~\ref{fig:library-alloy-initial-state} shows the translation of the model in Fig.~\ref{fig:library-initial-state}. Lines 2-4 define a book that has been borrowed, lines 5-7 defines a member that can borrow books, and lines 8-10 define the association between these two objects.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-initial-state.png}
+\caption{The initial state in Alloy.}
+\label{fig:library-alloy-initial-state}
+\end{figure}
+
+\subsection{Labels Rules}
+\label{sec:alloy-labels-rules}
+The Alloy specification for the object labels rules are generated based on the DSL introduced in Section~\ref{sec:subsidiary-models-object-labels}, for defining labels rules. Fig.~\ref{fig:library-alloy-labels-rules} shows the translation of the model in Fig.~\ref{fig:library-object-labels}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-labels-rules.png}
+\caption{The object labels rules in Alloy.}
+\label{fig:library-alloy-labels-rules}
+\end{figure}
+
+\subsection{Input Partitioning}
+\label{sec:alloy-input-partitioning}
+The Alloy specification for the input partitioning, for the example library system, is depicted in Fig.~\ref{fig:library-alloy-input-partitions}. Each data type is modelled with an abstract signature (line 1) that is extended with a concrete signature for each partition (e.g.,\ line 2). If a partition has input parameters, they are also modelled (e.g.,\ line 5).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/library-alloy-input-partitions.png}
+\caption{The input partitioning in Alloy.}
+\label{fig:library-alloy-input-partitions}
+\end{figure}
+
+
+\subsection{Main Module and Test Goals}
+\label{sec:alloy-main-module}
+The main module is static and is independent of the SUT and its models. It is depicted in Fig.~\ref{fig:alloy-main-module}. In the beginning, the module is defined and other modules are opened (lines 1-7). Then, the signatures for the system state and the abstract \texttt{Op} signature, used for tracing use cases, are defined (lines 9-12). Line 15-17 indicate that in all the states excluding the final state, a use case has to be executed.  The \texttt{apply} predicate (shown in Fig.~\ref{fig:alloy-main-apply}) decides which predicate, corresponding to the use cases, has to be applied on the model. Line 19 applies the rules on the labels and line 20 confines the state space and prevents from creating extra \texttt{Op} atoms. In lines 25-27, the initial state of the system is described, and the search scope is defined in lines 29-30. The additional, custom constraints in the Alloy model are defined in the \texttt{testSystem} predicate, if required. Line 30 indicates the scope to be five atoms excluding the atoms for the \texttt{State} signature whose scope is four that results in execution traces of length three (one state is four the initial state).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/alloy-main-module.png}
+\caption{The Alloy main module.}
+\label{fig:alloy-main-module}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/alloy-main-apply.png}
+\caption{The \texttt{apply} predicate for the example library system.}
+\label{fig:lalloy-main-apply}
+\end{figure}
+
+If the test goal is to generate exceptional states, the line 21 is commented out and line 22 is uncommented, and thus, the \texttt{fail\_apply} predicate is applied on the final state. The \texttt{fail\_apply} predicate is similar to \texttt{apply} predicate except that it includes the negative predicates for the use cases. In this case, the true paths of length three are tested and then an exceptional state happens (final state). This because that exceptions can not alter the domain model and hence, examining them in the middle of a path would be useless.
+
+For the example library system, the Alloy generates 73 test cases based on the given search scope defined in Fig.~\ref{fig:alloy-main-module}. One of the use cases is depicted in Appendix~\ref{app:library-testcases}, Fig.~\ref{fig:library-testcase}. The active use case in each state is shown by diamond. The \texttt{System} atom is shown by gray rectangle and the atoms of the domain model by bold rectangle. The labels and input data are respectively shown by eclipse and dashed lines.
+
+If the test goal is to generate exceptions (i.e.\ using the \texttt{fail\_apply} predicate, for the search scope of size one, five test cases are generated which are shown in Appendix~\ref{app:library-testcases}. Fig.~\ref{fig:library-exceptions-testcase-1} shows the test case that removes a member that has borrowed a book. Similarly, in Fig.~\ref{fig:library-exceptions-testcase-2}, a book that has been borrowed is deleted. Fig.~\ref{fig:library-exceptions-testcase-3} illustrates an invalid borrow operation. Fig.~\ref{fig:library-exceptions-testcase-4} and Fig.~\ref{fig:library-exceptions-testcase-5} tends to add a book with empty name and a book with a redundant name (\texttt{Book0}), respectively.

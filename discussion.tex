@@ -1,0 +1,24 @@
+%
+% 	Discussion
+%
+\label{sec:discussion}
+The introduced testing framework has made few assumptions about the system under test and the methodology used for its development, including
+
+\begin{itemize}
+	\item the requirements are available and the use cases have detailed specification and contains the details required by the framework.
+	
+	\item the structural model of the main and persistent classes of the domain is available.
+	
+	\item  the main target of the SUT is to manage the domain objects and hence, complex data processing and computation are not suitable for using this framework.
+	
+	\item The state of the system is determined by the relationship between the domain objects and data dependencies are represented by object labels. In this context, the verification of protocols and reactive systems can not be done by the framework. 
+	
+	\item the system under test is deterministic.
+	
+	\item execution of use cases do not have any side effect. Otherwise, the appropriate mechanisms are provided by the test harness.
+	
+	\item the mapping between the input parameters and the conditional statements, to the domain objects can be done easily.
+	
+\end{itemize}
+
+Additionally, similar to any approach based on static analysis, our approach is subject to constraints caused by using this technique. 

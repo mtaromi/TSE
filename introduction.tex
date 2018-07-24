@@ -1,0 +1,48 @@
+%
+%		Introduction
+%
+\label{sec:introduction}
+\IEEEPARstart{I}{n} the modern software era, testing plays an invaluable role in software development as a quality assurance measure. Estimates have been made that up to 50\% of effort and resources in software projects are allocated to testing. Model based testing (MBT) is one of the important stages of model driven development (MDD), which involves creating test cases from software models. When test cases are created from models, they reside at a higher level of abstraction, therefore creating and maintaining them will cost less, and will utilize more automation possibilities. Also, MBT takes a systematic route to test generation; this allows for a more goal-oriented and direct approach in achieving desirable test coverage criteria, especially when compared to ad-hoc testing. 
+
+Keeping models updated has always been a dire problem in development approaches that are based on models, and MBT is no exception. Also, models that MBT requires, usually involve details that are not considered in normal development processes, or are completely different models from the models developed during general software analysis and design, which only makes this problem worse.
+
+The goal of this research is to introduce a minimal set of structural and behavioural models that can be used as a basis for MBT. Models that are normally produced during the development process or simple models developed solely for testing were given priority. The primary concern in choosing these models was being intuitive and tangible for programmers and modellers.
+
+The proposed method is very simple to use and usual programmer/developer can use and learn it easily; it requires no particular modelling or model-based testing knowledge. We have focused on acceptance testing as, firstly, agile/lightweight methodologies typically consider unit testing and ignore acceptance testing due to associated technical difficulties, and secondly, there are several unit testing proposals that can be used (e.g., XX) though they need tooling support. The proposed approach is in fact an implementation of  the ``Directing testing by modelling the permissible order of operations" and ``Using static analysis" patterns that were introduced for applying MBT in agile/lightweight processes in our earlier work~\cite{Jalalinasab2012}.
+
+In general, automatic acceptance testing techniques are categorised in two types:
+\begin{enumerate}
+	\item Script-based techniques in which, based on the informally described requirements and case by case, the use cases are defined as test scripts using the programming language that is required by the testing framework. The testing frameworks FIT and Cucumber, used for Acceptance Test Driven Development (ATDD) approach are examples of this type of testing. However, these techniques, in particular, suffer from low abstraction level resulting in too many test cases for acceptable test coverage, developing test cases one by one, and high maintenance costs, and 
+	
+	\item Techniques based on system behavioural models in which use cases (system behaviouers) are specified in a formal way as a behavioural model (e.g.,~\cite{Nebut2006,Sarma2007,Kaplan2008}). These models are then used to find/define test execution paths for the system under test (SUT); each execution path is a test case. This type of testing is an on-line MBT method. The substantial problem with such techniques is the high complexity of the required model which makes them inappropriate for agile/lightweight processes.
+\end{enumerate} 
+
+Although acceptance testing based on behavioural models addresses the main problem with script-based testing--by providing higher level of abstraction, it yet struggles with complex and inappropriate models. Having addressed these problems, this paper introduces an acceptance testing method based on system behavioural models that are also appropriate for agile/lightweight processes, considering the facts that (i) such processes are typically used for data-oriented systems and (ii) the main models used in them are class diagrams and use cases. 
+
+The proposed testing framework uses the domain model (i.e., class diagram), as the structural model, use cases as the behavioural model, and a static analyser (i.e.,\ Alloy~\cite{Jackson2002}) for finding test cases (test generation) based on these models. The models are automatically translated into Alloy specifications which are then used to find execution trances (test cases).
+The focus of the framework is testing the systems that, by large, manage domain objects. Fig.~\ref{fig:framework-structure} shows the overall structure of the proposed framework.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.5\textwidth]{../Figures/framework-structure.png}
+\caption{Overall structure of the proposed framework.}
+\label{fig:framework-structure}
+\end{figure}
+
+The effectiveness and applicability of the proposed framework was evaluated by applying the framework in testing a medium-sized business application. The outcome was analysed and compared to other testing methods. Various testing coverage, such as line coverage, and mutation testing were used for  evaluation.
+
+\textit{Contributions.} This paper makes the following
+contributions:
+\begin{itemize}
+	\item \textit{Lightweight model-based acceptance testing.} We develop a lightweight testing framework with detailed description on how the approach is used from testers perspective.
+	
+	\item \textit{Behavioural modelling DSLs.} We develop a set of simple, easy to use DSLs for behavioural modelling.
+	
+	\item \textit{Implementation.} We provide the tooling support requires to create test models (DSLs), automatically transform models into Alloy (model transformations), and execute test cases on the SUT (test driver and test harness).
+	
+	\item \textit{Experiments. } We present results from a case study, and comparing the results with other testing techniques, and analysing the results using coverage criteria and mutation testing.
+\end{itemize}
+
+\textit{Outline.} The remainder of this paper is organized as
+follows. 
+Section~\ref{sec:running-example} explains our running example used to illustrate the testing framework. Section~\ref{sec:framework-overview} provides an overview of the proposed testing framework. Sections~\ref{sec:create-test-model} and~\ref{sec:test-generation-execution} describe the details of creating test models and test generation and execution, respectively. Section~\ref{sec:evaluation} presents the evaluation of the research. Finally, the paper concludes with a discussion of limitations, and an outline of the related research and future work.

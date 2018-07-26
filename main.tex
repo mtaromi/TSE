@@ -366,6 +366,8 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+%\usepackage[disable]{todonotes}
+\usepackage{todonotes}
 
 \begin{document}
 %
@@ -469,7 +471,12 @@
 % in the abstract or keywords.
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-In the modern software era, testing plays an invaluable role in software development as a quality assurance measure. Estimates have been made that up to 50\% of effort and resources in software projects are allocated to testing. MBT takes a systematic route to test generation; this allows for a more goal-oriented and direct approach in achieving desirable test coverage criteria, especially when compared to ad-hoc testing. Keeping models updated has always been a dire problem in development approaches that are based on models, and MBT is no exception. Also, models that MBT requires, usually involve details that are not considered in normal development processes, or are completely different models than those developed during software analysis and design, which only makes this problem worse. The goal of this paper is to introduce a minimal set of structural and behavioral models that can be used as a basis for MBT. The primary concern in choosing these models was being intuitive and tangible for programmers and modelers. The paper introduces a lightweight approach to automated acceptance testing, and the related lightweight models and model transformations are elaborated upon. Finally, this approach was evaluated by application to a case study and comparison to other testing methods. Linear coverage and mutation testing were used as a part of the case study evaluation.
+Testing is an invaluable tool in software development: estimates show up to 50\% of resources of software projects are spent on testing. However, measuring the quality of tests is difficult. Determining what tests to write is often left to the discretion and experience of the individual developer. Model-Based Testing (MBT) takes a systematic approach to test generation that avoids those biases, allowing for an objective measure of test coverage. 
+
+MBT introduces the issue of updating models and code together, a practice agile development approaches often avoid. This is made worse as MBT often requires models not usually developed in normal development processes.
+
+This paper introduces a a minimal set of structural and behavioral models to automatically generate acceptance tests. In choosing these models the primary concern was keeping models intuitive and accessible for practitioners. The detail description of the models and the relevant transformations are also provided.
+The feasibility of the proposed approach is demonstrated through  a non-trivial case study. Further evaluation is given by analysing the outcome of the case study (e.g.,\ discovered faults and errors and test coverage) with respect to different coverage criteria, namely line coverage,  input coverage, and use case coverage. The effectiveness of the approach is also assessed by mutation testing.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.

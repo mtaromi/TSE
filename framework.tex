@@ -41,7 +41,7 @@ Next, we discuss the components of the framework and the required models.
 \label{sec:framework-overview-structure}
 The tester creates a structural model of the domain model. The model includes those domain classes that are essential in analysis and typically represent persistent data. Our approach uses the class diagram as defined by an EMF model conforming to Ecore metamodel. %concepts namely associations, composition relations, relation multiplicity, inheritance, and abstract concepts.
  
- In case the internal state of a domain object is relevant to the use cases, objects can be optionally associated with an ``\textit{object label}''.
+In case the internal state of a domain object is relevant to the use cases, objects can be optionally associated with an ``\textit{object label}''.
 A \textit{label} is determined based on an object internal data or its relations with other objects. The labels are used to determine whether an object has a certain behaviour or not, and hence, they are especially used in the conditional expressions in modelling use cases (more details in Section ~\ref{sec:create-test model-behaviour}). For example, an object may have ``Active" and ``Inactive" labels, and only \textit{active} objects can participate in a use case. This concept is similar to ``State" design pattern~\cite{Gamma1995}. 
 
 Defining ``object labels" avoids exposing internal representations to the model finder (making analysis of the model computationally infeasible) and yet retains a degree of flexibility in a modelling and verifying behaviours of the SUT.

@@ -1,3 +1,13 @@
 %
 % 	Background
 %
+\label{sec:background}
+In general, automatic acceptance testing techniques are categorised in two types:
+\begin{enumerate}
+	\item Script-based techniques; based on the informally described requirements and case by case, the use cases developers write tests in a scripting language specified by a testing framework. Examples include the FIT and Cucumber frameworks, used in Acceptance Test Driven Development (ATDD)~\cite{Pugh2011}. However, these techniques suffer from low abstraction level. This results in	brittle, high-maintenance tests which must be developed and maintained individually, and
+	
+	\item Techniques based on system behavioural models;  use cases (system behaviours) are formalised as behavioural models (e.g.,~\cite{Nebut2006,Sarma2007,Kaplan2008}), implicitly defining the test execution paths for the system under test (SUT). This type of testing is an on-line MBT method. However, in such techniques the required model is often complex, making them inappropriate for agile processes.
+
+\end{enumerate} 
+
+Deriving tests based on behavioural models addresses the main problem with script-based testing--by providing higher level of abstraction. It, however, struggles with complex and inappropriate models for lightweight processes. Accordingly, this paper presents an acceptance testing technique based on system behavioural models, and introduces a set of simple models, so it becomes practical for application in agile processes. Our method uses simple models, in particular class diagrams and use cases--considered as the most useful models~\cite{Erickson2007,Erickson2008}, and is tailored to data-oriented systems.

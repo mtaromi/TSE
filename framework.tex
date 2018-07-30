@@ -50,7 +50,7 @@ Defining ``object labels" avoids exposing internal representations to the model 
 
 \subsection{Behavioural Model}
 \label{sec:framework-overview-behaviour}
-The tester develops a behavioural model of the SUT based on requirements (or use cases) describing effects of the use case on domain objects. Use cases are generally described in an informal way~\cite{}, making them insufficient for generating automatic tests.  Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases,  which provides required formalism and remains familiar for the developer as the behavioural model is constructed via calling specific methods in a language the developer is already familiar with.
+The tester develops a behavioural model of the SUT based on requirements (or use cases) describing effects of the use case on domain objects. Generally, use cases do not have required formalism which makes them insufficient for automatic test generation~\cite{}. Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases, which provides required formalism and remains familiar for the developer;  the behavioural model is constructed via calling specific methods in a language that the developer is already familiar with (i.e.,\ Java).
 We decided to introduce a new DSL for modelling the behaviour of a system as 
 \begin{itemize}
 	\item developers are already familiar with programming languages and modelling environments and thus, existing IDEs can be used for creating and maintaining our models as well,
@@ -137,4 +137,4 @@ The test harness is an SUT-specific piece of code developed by testers to utilis
 
 It also includes the data generator that generates appropriate test data for use cases, using the test data model. Although the data generator is shown as a separate component in Fig.~\ref{fig:framework-structure}, it is not an independent components and is developed as part of ``Command Executor". 
 
-In the following two sections, we describe the details of creating primary and subsidiary models which are ultimately translated into Alloy specifications, and the test generation and execution workflow.
+In the following two sections, we describe the details of creating primary and subsidiary models, which are ultimately translated into Alloy specifications, and the test generation and execution workflow.

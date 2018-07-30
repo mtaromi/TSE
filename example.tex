@@ -4,12 +4,12 @@
 \label{sec:running-example}
 To illustrate the framework and the testing activities, e.g., creating and preparing test models, we use a simple library system throughout the paper. 
 
-In this system, a book has a unique name and there is only one copy of each book. Each member can borrow at most two books at any time. We identify (and use) six use cases for the system:
+In this system, a book has a unique name and there is only one copy of each book. Each member can borrow at most two books at the same time. We identify (and use) six use cases for the system:
 \begin{enumerate}
 	\item Add Book 
 	\begin{itemize}
 		\item  Input: book name
-		\item Pre-condition(s): the name should not be empty and redundant.
+		\item Pre-condition(s): the name should not be empty and duplicate.
 	\end{itemize}
 
 	\item Add Member

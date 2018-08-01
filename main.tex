@@ -471,12 +471,20 @@
 % in the abstract or keywords.
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-Testing is an invaluable tool in software development: estimates show up to 50\% of resources of software projects are spent on testing. However, measuring the quality of tests is difficult. Determining what tests to write is often left to the discretion and experience of the individual developer. Model-Based Testing (MBT) takes a systematic approach to test generation that avoids those biases, allowing for an objective measure of test coverage. 
+Testing is an important part of the software development process, estimates show up testing uses up to 50\% of resources
+on projects. Unfortunately, determining what tests to write is a difficult task and is often left to the discretion and
+experience of the individual developer.
 
-MBT introduces the issue of updating models and code together, a practice agile development approaches often avoid. This is made worse as MBT often requires models not usually developed in normal development processes.
+Model-Based Testing (MBT) avoids this bias by taking a systematic approach to test generation.
+However, MBT requires models not usually developed in normal development processes.
+These models must then be kept up to date with changes to code, a practice agile development approaches often avoid.
 
-This paper introduces a a minimal set of structural and behavioral models to automatically generate acceptance tests. In choosing these models the primary concern was keeping models intuitive and accessible for practitioners. The detail description of the models and the relevant transformations are also provided.
-The feasibility of the proposed approach is demonstrated through  a non-trivial case study. Further evaluation is given by analysing the outcome of the case study (e.g.,\ discovered faults and errors and test coverage) with respect to different coverage criteria, namely line coverage,  input coverage, and use case coverage. The effectiveness of the approach is also assessed by mutation testing.
+This paper introduces shows how a minimal set of structural and behavioral models can be used to automatically generate acceptance tests. We begin by chosing models intuitive and familiar to ordinary practitioners, then describe the process of transforming them
+to executable test cases.
+
+A non-trivial case study demonstrates the feasibility of the proposed approach. 
+We compare conventional test quality metrics (e.g.\, line coverage, mutation score) to those of manually developped tests.
+Finally we discuss faults discovered in the case study as a result of using this approach. 
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.

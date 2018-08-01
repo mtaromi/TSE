@@ -2,16 +2,16 @@
 % 	Discussion
 %
 \label{sec:discussion}
-The work presented here is inspired by TestEra, presented by Khurshid et al.~\cite{Khurshid2004}, in which tests are generated using Alloy. Our work however, substantially differs from TestEra: 1) TestEra focuses on unit testing (tests are defined at method level) whereas in our work, use cases and their execution sequence are used for test generation (i.e.,\ acceptance testing), 2) in TestEra, the Alloy specifications are created manually and thus, the testers have to learn to model in Alloy, in contrast to the proposed framework, and 3) TestEra uses the heap memory and thus, is limited to executing time objects, while in our framework, the tester can define any approach for inspection.
+The work presented here is inspired by TestEra, presented by Khurshid et al.~\cite{Khurshid2004}, in which tests are generated using Alloy. Our work however, substantially differs from TestEra: 1) TestEra focuses on unit testing (tests are defined at method level) whereas this work, use cases and their execution sequence are used for test generation (i.e.,\ acceptance testing), and 2) in TestEra, the Alloy specifications are created manually and therefore required testers to learn Alloy's modelling language.
 
-Another similar work to ours is~\cite{Kaplan2008} in that tests are automatically generated based on the formal specification of requirements and the class diagram. The data types are limited to Integers and the verification is performed by a set of fault models to mutate an object diagram. Using a formal language, limiting to Integer data types, and verification based on fault models are the main differences between this work and our framework.
+Another similar work is~\cite{Kaplan2008}, in which tests are automatically generated from the formal specification of requirements and the class diagram. The data types are limited to Integers and the verification is performed by a set of fault models to mutate an object diagram. Using a formal language, limiting to Integer data types, and verification based on fault models are the main limitations of that work compared to this.
 
-In~\cite{Scheetz1999}, a first-order logic language is used to define the system constraints, and the test goals are specified by object diagrams, both of which are not appropriate for using in lightweight processes--our main target. Their approach is mainly appropriate for systems that has complex state-based behaviour, in contrast to our framework.
+In~\cite{Scheetz1999}, a first-order logic language is used to define system constraints, and the test goals are specified by object diagrams, both of which are not appropriate for using in lightweight processes--our main target. Their approach is mainly appropriate for systems that has complex state-based behaviour, in contrast to our framework.
 Similarly,~\cite{Cavarra2002}, which mainly uses state diagrams for describing requirements, requires complex behavioural modelling which makes it unsuitable for lightweight development.
 
-Testing based on ``virtual contracts"~\cite{Engels2006} is similar to our work as such they are analogous to pre-/post-conditions. But, they are defined for unit testing. Also, testers (developers) would be more familiar with our internal Java-based DSL in comparison to virtual contracts.
+Testing based on ``virtual contracts"~\cite{Engels2006} is similar to our work as such they are analogous to pre-/post-conditions. However, that work focuses on unit testing. Also, testers would be more familiar with our internal Java-based DSL in comparison to virtual contracts.
 
-Consequently, in the context of lightweight processes, our framework advantages over the previous and similar studies by 1) using lightweight and situational models, 2) automatically generating test execution paths, 3) providing flexible methods for generating test data and verification, and 4) providing traceability to requirements.
+Consequently, in the context of lightweight processes, our framework has advantages over the previous and similar studies by 1) using lightweight and situational models, 2) automatically generating test execution paths, 3) providing flexible methods for generating test data and verification, and 4) providing traceability to requirements.
 
 Nevertheless, the presented testing framework has made few assumptions about the system under test and the methodology used for its development. Also, similar to any approach based on static analysis, our proposal is subject to constraints caused by using this technique. The assumptions and limitations are as follow.
 
@@ -22,7 +22,7 @@ Nevertheless, the presented testing framework has made few assumptions about the
 	
 	\item  The main target of the SUT is to manage the domain objects and hence, complex data processing systems are not suitable for using this framework.
 	
-	\item The state of the system is determined by the relationship between the domain objects and data dependencies are represented by object labels. In this context, the framework can not be used for the verification of protocols and reactive systems. 
+	\item The state of the system is determined by the relationship between the domain objects and data dependencies are represented by object labels. This makes the framework unsuitable for the verification of protocols and reactive systems. 
 	
 	\item The system under test is deterministic.
 	
@@ -31,4 +31,4 @@ Nevertheless, the presented testing framework has made few assumptions about the
 	\item The mapping between the input parameters and the conditional statements, to the domain objects can be done easily.
 \end{itemize}
 
-However, considering the target of this research (testing data-oriented systems developed using lightweight development processes), these assumptions and limitations do not hamper (or limit) the application and benefits of the framework in practice. Our case study, in particular, demonstrates the applicability and effectiveness of the proposed framework in testing a typical, non-trivial software application. It shows that, in addition to implementation errors, the framework would identify problems in analysis and ambiguities in requirements specifications, even throughout the development of a system that is iteratively delivered and approved by the customer.
+It is worth noting that this work applies well too testing data-oriented systems developed using lightweight development processes, as these assumptions and limitations do not hamper the application and benefits of the framework in practice. Our case study, in particular, demonstrates the applicability and effectiveness of the proposed framework in testing a typical, non-trivial software application. It shows that in addition to implementation errors, the framework can identify problems in analysis and ambiguities in requirements specifications, even throughout the development of a system that is iteratively delivered and approved by stakeholders.

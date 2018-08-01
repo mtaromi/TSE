@@ -2,8 +2,39 @@
 % 	Framework Overview
 %
 \label{sec:framework-overview}
-This section overviews our lightweight method for automatic model-based acceptance testing. 
-Fig.~\ref{fig:testing-framework} shows the overview of the proposed testing framework, which is built on Alloy. All the models are translated into Alloy models which are then solved in order to find test cases; each solution is an execution trace of the SUT representing a test case. The required models are partitioned into \textit{Primary models} and \textit{Subsidiary models}. The \textit{primary models} are created from the description of use cases (in natural language) and serve as the main test models for test generation. The \textit{subsidiary models} are required in aspects of test execution such as referring to domain objects and resetting the SUT at the beginning of each test run. Additionally, the framework requires a \textit{test harness} that is developed by the tester and is specific to the SUT. The test harness consists of three parts: \textit{data generator}, \textit{command executor}, and \textit{Inspector} and is responsible for the communications between the test driver and the SUT.
+Fig.~\ref{fig:testing-framework} shows an overview of the proposed testing framework.
+
+From testers' perspective, the following steps are involved in using our framework:
+\begin{enumerate}
+	\item Developing a domain model is specified using EMF~\cite{EMF}. 
+	
+	\item Describing use cases with the provided DSL.
+	
+	\item Describing the initial state of the system are described with the given DSL.
+	
+	\item (Optionally) describe invariants of domain objects.
+	
+	\item Identify and optionally partitoin input data types using a provided DSL. 
+	
+	\item Specifying the test scope.
+	
+	\item Developing the test harness.
+	
+	\item All of the above models are automatically translated into Alloy's native modelling language.
+	
+	\item Alloy solves the model, yielding a set of execution traces. Each trace is a test cases and includes the required input values.
+	
+	\item The test driver runs executes each test case on the SUT using the test harness. The SUT is reset to the initial state
+	before running the next test case.
+\end{enumerate}
+
+
+The \textit{primary models} required include use cases (translated from natural language to the specified DSL) and
+the an EMF class diagram.
+Additional \textit{subsidiary models} describe the initial state of the SUT, and optionally describes
+invariants between object states.
+
+The tester develops an SUT specific \textit{test harness} to mediate interaction with the test generation framework. The test harness consists of a \textit{data generator}, a \textit{command executor}, and an \textit{inspector}. \todo{??? describe these?}
 
 \begin{figure*}[ht]
 \centering
@@ -12,58 +43,34 @@ Fig.~\ref{fig:testing-framework} shows the overview of the proposed testing fram
 \label{fig:testing-framework}
 \end{figure*}
 
-From testers' perspective, the following key steps are involved in  test generation and execution by the presented framework.
-\begin{enumerate}
-	\item The use cases and the domain model are defined throughout the general software development process. 
-	
-	\item The domain (structural) model is specified as EMF~\cite{EMF} models. 
-	
-	\item Input data types (and their possible partitioning) are identified and defined using the introduced DSL by the framework. 
-	
-	\item Use cases are described with the provided DSL.
-	
-	\item The rules, applying on labels, and the initial state of the system are described with the given DSL.
-	
-	\item The tester specifies the test goal.
-	
-	\item The test harness is developed by the tester.
-	
-	\item All of the above models are then automatically translated into Alloy.
-	
-	\item Alloy finds a set of execution traces (i.e.,\ test paths or test cases), with their required input values, and provides them to the test driver.
-	
-	\item The test driver runs the system under test (SUT) based on the provided execution traces, by Alloy; finds the associated use cases to each test case and executes them in order.
-\end{enumerate}
-
 Next, we discuss the components of the framework and the required models. 
 
 \subsection{Structural Model}
 \label{sec:framework-overview-structure}
-The tester creates a structural model of the domain model. The model includes those domain classes that are essential in analysis and typically represent persistent data. Our approach uses the class diagram as defined by an EMF model conforming to Ecore metamodel. %concepts namely associations, composition relations, relation multiplicity, inheritance, and abstract concepts.
- 
-In case the internal state of a domain object is relevant to the use cases, objects can be optionally associated with an ``\textit{object label}''.
-A \textit{label} is determined based on an object internal data or its relations with other objects. The labels are used to determine whether an object has a certain behaviour or not, and hence, they are especially used in the conditional expressions in modelling use cases (more details in Section ~\ref{sec:create-test model-behaviour}). For example, an object may have ``Active" and ``Inactive" labels, and only \textit{active} objects can participate in a use case. This concept is similar to ``State" design pattern~\cite{Gamma1995}. 
+The framework requires the tester to provide an EMF class diagram, conforming to Ecore metamodel.
+This structural model includies domain entities essential to analysis. These entities typically represent the SUT's persistent data. 
+In case the internal state of a domain object is relevant to the use cases, objects can optionally have a label.
+An \textit{object label} is determined based on its internal data or the relations it has with other objects.
+Labels determine whether an object is allowed to participate as input to use cases (see Section ~\ref{sec:create-test model-behaviour}). For example, an book may have a ``Borrowed" or ``Returned" label, and only \textit{returned} books can participate in the borrow  use case. Labels are similar to the ``State" pattern described in~\cite{Gamma1995}. 
 
 Defining ``object labels" avoids exposing internal representations to the model finder (making analysis of the model computationally infeasible) and yet retains a degree of flexibility in a modelling and verifying behaviours of the SUT.
 
-%Defining ``object labels", on one hand, allows us to hind and encapsulate the internal data structure from static analyser (prevents data dependency), as such tools are typically weak in data modelling and are also limited to simple data structures (e.g., integers). On the other hand, without these labels the behavioural modelling would be complicated and would result in a model consisting the whole logic of the SUT.
-
 \subsection{Behavioural Model}
 \label{sec:framework-overview-behaviour}
-The tester develops a behavioural model of the SUT based on requirements (or use cases) describing effects of the use case on domain objects. Generally, use cases do not have required formalism which makes them insufficient for automatic test generation~\cite{}. Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases, which provides required formalism and remains familiar for the developer;  the behavioural model is constructed via calling specific methods in a language that the developer is already familiar with (i.e.,\ Java).
-We decided to introduce a new DSL for modelling the behaviour of a system as 
+The tester develops a behavioural model of the SUT based on system use cases. This model describs effects of the use case on domain objects. Generally, use cases do not have the required formalism which makes them insufficient for automatic test generation~\cite{}. Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases. This DSL provides the required formalism, yet remains familiar for the developer;  the behavioural model is constructed via chaining methods in a language that the developer is already familiar with (i.e.,\ Java).
+
+Benefits of using a DSL as a modelling language include: 
 \begin{itemize}
-	\item developers are already familiar with programming languages and modelling environments and thus, existing IDEs can be used for creating and maintaining our models as well,
+	\item developers are already familiar with the programming language. This allows existing IDEs and tools to be used for creating and maintaining the model,
 	
 	\item the use cases are modelled using textual format which is similar to programming and hence, creating behavioural model by our DSL would be familiar to developers (e.g.,\ by using familiar text editors), and 
 	
-	\item other testing frameworks such as JUnit~\cite{Beck2000}, jMock\footnote{ jMock – \url{http://jmock.org}}, and Selenium~\footnote{Selenium - \url{https://www.seleniumhq.org/}}, have been very successful in using DSLs for specifying tests.
+	\item other testing frameworks such as JUnit~\cite{Beck2000}, jMock\footnote{ jMock – \url{http://jmock.org}}, and Selenium~\footnote{Selenium - \url{https://www.seleniumhq.org/}}, have been successful in using DSLs for specifying tests.
 \end{itemize}
 
-%The first two items, in particular, are vital in providing a lightweight testing technique. 
-The introduced DSL  supports modelling  of
+The introduced DSL supports modelling of
 \begin{enumerate}
-	\item input parameters (of the problem domain or other inputs) for each use case,
+	\item input parameters for each use case,
 	
 	\item pre-conditions for executing a use case, 
 	
@@ -72,52 +79,58 @@ The introduced DSL  supports modelling  of
 	\item the effects of use case execution on domain objects (post-conditions).
 \end{enumerate}
 
-Note that use cases are inherently not object-oriented, and we assume that relating use cases and the domain model (e.g., mapping the input parameters and describing the effects of executing use cases) is not too complex (i.e., it can be done in a straightforward way). Additionally, as described in the previous section, ``object labels" are used the conditional expressions of pre-/post-conditions.
+Use cases are inherently not object-oriented, however we assume that mapping use cases to the domain model (e.g., mapping the input parameters and describing the effects of executing use cases) is relatively straightforward for data-intensive systems. Object labels can be used in pre- and post-conditions to help the tester gain some flexibility in this mapping.
 
 \subsection{Test Data}
 \label{sec:framework-overview-test-data}
-Generating test data is one the main issues in automatic test generation~\cite{}. A prevalent approach for generating test data, among MBT methods, is input domain partitioning~\cite{Ammann2008}. In this approach, the input domain is partitioned such that it is enough to test the system only for an arbitrary representative of every and each partition. This approach is particularly suited well to the kinds of system not involving complicated data manipulation and data processing. 
+Generating test data is one the main issues in automatic test generation~\cite{}. Input domain partitioning is a well known approach for generating test data~\cite{Ammann2008}. This approach partitions asks the tester to partitoin the input domain such that it is enough to test the system with only a single representative of every and each partition. This approach is particularly suited to the systems not involving complicated data manipulation and processing. 
 
-The framework allows the tester to specify input data types and their partitioning in a Java based DSL. The tester then provides a data generator (as executable code) for each partitioning  according to the prescribed architecture by the framework. 
-
-
+The framework allows the tester to specify input data types and their partitioning in a Java based DSL. The tester then provides a data generator (as executable code) for each partitioning according to the architecture prescribed by the framework. 
 
 \subsection{Subsidiary Models}
 \label{sec:framework-overview-subsidiary}
-In addition to the aforementioned models, the testing approach relies on three other models that are classified as subsidiary models, as they are less important and are smaller than other models. 
+In addition to the aforementioned models, the testing approach relies on three additional subsidiary models.
 
 \subsubsection{Initial State} 
 \label{sec:framework-overview-initial}
-The initial state of the system is needed for model solving (static analysis). The objects present in the initial state, and optionally their labels and relations, are specified in our DSL.
+The initial state of the system is needed for model solving (static analysis). The objects present in the initial state and (optionally) their labels and relations are specified in our DSL.
 
 \subsubsection{Object Labels Rules}
 \label{sec:framework-overview-rules}
-Certain constraints on relations between objects (e.g., number of involved objects in a relation) can not be specified in the behavioural model DSL. The framework includes a DSL for defining such dependencies in a separate model.
+Certain constraints on relations between objects (e.g., number of involved objects in a relation) cannot be specified in the behavioural model DSL, as they do not pertain to a single use case. The framework includes a DSL for defining such dependencies  separately.
 
-\subsubsection{	Test Goals}
-The tester specifies the test goal and the search scope (used in static analysis). There are two built-in test goals. One goal is successful execution of use cases, and the other goal is running the system aiming at falsifying the pre-conditions of a use case.
-The search scope determines the maximum length of execution traces, and and is needed as we utilize a finite model generator (i.e.,\ Alloy).  We have included the ability for the tester to force the inclusion or exclusion of a specific use case in execution traces. This may be useful, eg, to force a login in data-driven systems where most functionality is only accessible after logging in. Section~\ref{sec:alloy-main-module} provides more detail on how test goals and search scope are defined.
-
+\subsubsection{Test Goals}
+The tester specifies the test goal and the search scope (used in static analysis). There are two built-in test goals. Solutions obtained using the first goal are traces representing successful execution of use cases.
+Solutions obtained using the second goal attempts to run use cases when the pre-conditions are not met, in an attempt to discover bugs.
+The search scope determines the maximum length of execution traces, and is an inherit limitation to our apptoach, as we utilize a finite model generator (i.e.,\ Alloy).  The tester has the flexibility to force the inclusion or exclusion of a specific use case from execution traces. This may be useful, eg, to force a login in data-driven systems where most functionality is only accessible after logging in. Section~\ref{sec:alloy-main-module} provides more detail on how test goals and search scope are defined.
 
 
 \subsection{Model Transformer: to Alloy}
 \label{sec:framework-overview-model-transformer}
-As mentioned earlier, the framework has been built on Alloy and thus, all models are translated into Alloy models. This component translates the structural and behavioural models into Alloy models, which have the required formalism and constitute the main test models used for test generation.
+This component translates the structural and behavioural models into Alloy's native modelling language.
 
 
 \subsection{Static Analyser: Alloy}
 \label{sec:framework-overview-static-analyser}
-The static analyser finds a set of execution traces based on the formal specification of the system (the generated Alloy models); each trace is principally a solution for the formal specification, and also represents a test case with its associated use cases. Our framework uses Alloy as the static analyser. Alloy has a high-level specification language in comparison to other model analysis tools  based on CTL\footnote{CTL – Computation Tree Logic}, LTL\footnote{LTL – Linear Temporal Logic}, and first-order logic. The lower level of abstraction makes such languages not suitable targets for translating from high-level descriptions of system behavior.
+The static analyser solves for a set of execution traces based on the the generated Alloy models. Alloy has a high-level specification language compared to CTL\footnote{CTL – Computation Tree Logic}, LTL\footnote{LTL – Linear Temporal Logic}, and first-order logic model analysis tools. The lower level of abstraction makes such languages not suitable targets for translating from high-level descriptions of system behavior.
 
-Alloy has its own specification language for software specification which is built on the set theory and relational calculus. Most of the other approaches that are based on the set theory (e.g., Z~\cite{Spivey1992}) have weak execution support. One of the advantages of Alloy is its ability to enumerate all possible solutions for a given set of constraints for which it is also called a Model Finder. In Alloy, the specification is converted into a Boolean SATisfiability problem (SAT) which is then solved using a SAT solver. The solution (if exists) is mapped back to a relational model. Using SAT solvers gives rise to the need for a finite search space. This also limits the solver to finding small instances of the solution space. But, considering the ``Small Scope Hypothesis" by Jackson~\cite{Jackson2012}, ``most flaws in models can be illustrated by small instances, since they arise from some shape being handled incorrectly, and whether the shape belongs to a large or small instance makes no difference. So if the analysis considers all small instances, most flaws will be revealed". This hypothesis has not been proved and also it is obvious that some errors only happen in large processing. However, the success of Alloy in modelling and testing indicates that the hypothesis is intuitive and is nearly valid.
+Alloy has its own specification language for software specification which is built on the set theory and relational calculus. Most of  other approaches based on set theory (e.g., Z~\cite{Spivey1992}) have weak execution support. One advantage of using Alloy is its ability to enumerate all possible solutions for a given set of constraints for which it is also called a Model Finder. Alloy converts the specification to a SAT problem\footnote{Boolean SATisfiability problem}, which is then solved using a SAT solver. The solution (if exists) is mapped back to a relational model. Using SAT solvers gives rise to the need for a finite search space. This also limits the solver to finding small instances of the solution space. The ``Small Scope Hypothesis" claims ``most flaws in models can be illustrated by small instances, since they arise from some shape being handled incorrectly, and whether the shape belongs to a large or small instance makes no difference. So if the analysis considers all small instances, most flaws will be revealed"~\cite{Jackson2012}. This claim has not been proved, however, previous work has demonstrated the usefulness of approaches subject to this constraint in finding errors in software and models~\cite{??{.
 
+\todo{move this to related works}
 %In~\cite{Khorshid2004}, a method for generating tests for Java code using Alloy is introduced. This method works at the method level (single method) and Alloy specifications are written manually for method's pre- and post-conditions. Method's inputs are generated by Alloy based on pre-conditions, and after executing a method, the objects in the memory (heap) is compared with post-conditions (instances that alloy has found as solutions). The authors show that their method is effective for generating test cases throughout few case studies. 
 
 \subsection{Test Driver}
 \label{sec:framework-overview-test-driver}
-The test driver executes the traces from the model finder on the SUT. A test case may be associated to \todo{better term than cover/relate?} a number of use cases with their input parameters. Each test case also specifies the expected state of the system after executing that test. A state of the system is represented by a snapshot of the objects of the domain model at a particular moment. 
+The test driver uses the test harness to executes solutions to the Alloy model on the SUT.
+Each solution is a test case that includes: (1) a number of use cases with their input parameters,
+and (2) a description of the final expected \textit{state} of the SUT if the test case is run from the initial state.
+The state of the SUT consists of a snapshot of the objects of the domain model at a particular moment. 
 
-The test driver finds the associated use cases for each test case and, after generating required input parameters (as prescribed by the test case), executes them on the SUT, via the test harness. After the execution of each use case, the current state of the SUT is compared to the expected state of the system (specified by the test case) Inconsistencies indicate a failed test, and test execution stops. Otherwise, the next use case is executed.  The workflow of the test driver is illustrated in Fig.~\ref{fig:test-driver-workflow}.
+The driver instructs the harness to reset the SUT its initial state before running each test case.
+The driver the uses the harness to run the use cases one by one (after generating required input parameters).
+After the execution of each use case, the current state of the SUT is compared to the expected state of the system. 
+Inconsistencies result in a failed test, and test execution stops. Otherwise, the next use case is executed.
+Fig.~\ref{fig:test-driver-workflow} shows this workflow.
 
 \begin{figure*}[!t]
 \centering
@@ -128,13 +141,9 @@ The test driver finds the associated use cases for each test case and, after gen
 
 \subsection{Test Harness}
 \label{sec:framework-overview-test-harness}
-The test harness is an SUT-specific piece of code developed by testers to utilise the testing framework. All communications between the test driver and the SUT, including executing a use case and observing the behaviour of the SUT, are performed by this component. The test harness has two main parts: 
+The test harness is an SUT-specific piece of code developed by testers to utilise the testing framework. This component mediates all communications between the test driver and the SUT, including executing a use case and observing SUT behaviour. The test harness includes: 
 \begin{enumerate}
-	\item the \textit{command executor} that is responsible for executing use cases on the SUT. Similar to the ``Command" design pattern, it provides the required interfaces to the test driver for executing use cases. 
+	\item the \textit{command executor}, which is responsible for executing use cases on the SUT.  This component also includes machinery to generate representative data points from specified input partitions as needed. 
 	
-	\item the \textit{inspector} that allows the test driver to observe the internal state of the SUT, i.e., the domain objects and their labels.
+	\item the \textit{inspector}, which provides a list of domain objects and their labels to the test driver.
 \end{enumerate}
-
-It also includes the data generator that generates appropriate test data for use cases, using the test data model. Although the data generator is shown as a separate component in Fig.~\ref{fig:framework-structure}, it is not an independent components and is developed as part of ``Command Executor". 
-
-In the following two sections, we describe the details of creating primary and subsidiary models, which are ultimately translated into Alloy specifications, and the test generation and execution workflow.

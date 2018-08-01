@@ -2,16 +2,18 @@
 % 	Case Study
 %
 \label{sec:evaluation}
-To assess the effectiveness and applicability of our approach, we have first conducted a case study on a non-trivial medium-sized business application. Then, we evaluate the outcome based on different coverage criteria and mutation testing technique. 
+To assess the effectiveness and applicability of our approach, we conducted a case study on a non-trivial business application. We present measures of test coverage including line coverage and mutation score to provide a comparison with manually developped tests. 
 
 
 \subsection{Case Study}
 \label{sec:evaluation-case-study}
-The subject is an organisation internal mailing system which is a windows-based desktop application. The system was developed throughout an iterative-incremental process using Java language. The code for the business logic consists of about 1000 LOC and the UI code has about 6000 LOC.
-The requirements and use cases were documented in the analysis phase, and most of the use cases are about recording and manipulating the internal mails. Consequently, the system was appropriate for using our testing framework. Moreover, as the system was developed incrementally, the system was approved (and verified) by the customer at the end of each iteration, and  hence, the system has acceptable quality (i.e.,\ accepted by the customer).
-The detail description of the case study is available in the master thesis of the first author~\cite{Jalalinasab2012b}. 
+The subject program is an internal mailing system, developed as a desktop application. The system was developed throughout an iterative-incremental process using Java language by a team of undergraduate students as a final project. The authors of this study implemented the framework described in section~\section{xxx} on the code developed by one of the student groups.
+The code consists of approximately 1000 LOC in business logic and 6000 LOC in UI logic.
 
-In the case study, we have focused on 15 use cases, depicted in Fig.~\ref{fig:case-use-cases}. The system has other use cases such as ``View Roles" and ``Aggregated Report", which do not make any change on the domain model and thus they were excluded in our study. 
+Students documented the requirements and use cases were in an analysis phase, and most of the use cases are include sending and manipulating the internal mails. The system was developed incrementally, and a working system was delivered at the end of each iteration to the course graders.
+The detailed description of the case study is available in~\cite{Jalalinasab2012b}. 
+
+In the case study, we have focused on 15 use cases listed in Fig.~\ref{fig:case-use-cases}. The system has other use cases such as ``View Roles" and ``Aggregated Report", which do not make changes to the domain model and thus were excluded from our study. 
 
 \begin{figure*}[h]
 \centering
@@ -20,7 +22,7 @@ In the case study, we have focused on 15 use cases, depicted in Fig.~\ref{fig:ca
 \label{fig:case-use-cases}
 \end{figure*}
 
-\textbf{Structural Model.} The structural model is shown in Fig.~\ref{fig:case-structure} which was created based on the analysis structural model created for the system in the analysis phase.
+\textbf{Structural Model.} The structural model is shown in Fig.~\ref{fig:case-structure}. Authors of this paper created it based on the analysis structural model the students created in the system analysis phase.
 
 \begin{figure*}[!t]
 \centering
@@ -34,22 +36,22 @@ In the case study, we have focused on 15 use cases, depicted in Fig.~\ref{fig:ca
 \label{fig:case-structure}
 \end{figure*} 
 
-\textbf{Data Types.}  We have identified the following data types and partitioning for them:
+\textbf{Data Types.}  We identified the following data types and partitioning for them:
 \begin{itemize}
-	\item Logical two-values; it is used for accepting or rejecting a process, and also defining the state of a mail, namely ``waiting" and ``for information". It has two partitions of ``true" and ``false".
+	\item Boolean;  used for accepting or rejecting a process and defining the state of a mail (``action required" and ``information only"). It has two partitions of ``true" and ``false".
 	
-	\item String; it is used for string inputs such as mail's content and title. It has two partitions of ``empty" and ``non-empty". 
+	\item String; used for string inputs including as mail's body and title. It has two partitions of ``empty" and ``non-empty". 
 	
 	\item Role Name; for this data type three partitions, including ``empty", ``non-empty", and ``duplicate",  were defined.
 	
-	\item User Name: it has three partitions: ``empty", ``non-empty", and ``duplicate".
+	\item Username: it has three partitions: ``empty", ``non-empty", and ``duplicate".
 	
 	\item Password Pairs: it is used for creating password in signing up. It has three partitions: ``empty", ``identical pairs", and ``non-identical pairs".
 \end{itemize}
 
- \textbf{Object Labels.} Seven labels were identified and defined for the ``Mail" object, namely ``ForApproval", ``ApprovedBefore", ``Received", ``ReceivedNeedsReply", ``ReceivedBefore", ``Forwarded", and ``Sent". The ``Structure" domain object has also two labels including ``NotRoot" and ``HasRoot". Other domain objects do not have state-based behaviour and thus no labels were defined for them.
+ \textbf{Object Labels.} Authors identified seven labels for the ``Mail" object, namely ``ForApproval", ``ApprovedBefore", ``Received", ``ReceivedNeedsReply", ``ReceivedBefore", ``Forwarded", and ``Sent". The ``Structure" domain object has also two labels including ``NotRoot" and ``HasRoot". Other domain objects did not have state-based behaviour and thus we defined no labels for them.
 
-\textbf{Subsidiary Models.} Due to limited data dependencies, there is no rules for determining the labels, and thus there is no model of the rules. The only subsidiary model is the model describing the initial state. We used the initial state depicted in Fig.~\ref{fig:case-initial-state} in the testing experiment.
+\textbf{Subsidiary Models.} No label rules were used, due to limited dependencies. The only subsidiary model was the initial state( Fig.~\ref{fig:case-initial-state}).
 
 \begin{figure}[h]
 \centering
@@ -58,14 +60,16 @@ In the case study, we have focused on 15 use cases, depicted in Fig.~\ref{fig:ca
 \label{fig:case-initial-state}
 \end{figure}
 
-\textbf{Test Harness.} The test harness was developed for our case study and it consists of about 300 LOC. For this case, we used the uispec4j\footnote{ uispec4 – http://uispec4j.org} in developing the components responsible for automatic communication with the UI. Additionally, most of the existing code were reused for developing the ``Inspector" component.
+\textbf{Test Harness.} The test harness was developed for our case study and it consists of about 300 LOC. To connect the SUT to the test driver, we used the uispec4j\footnote{ uispec4 – http://uispec4j.org} library. Additionally, most of the existing code were reused for developing the ``Inspector" component.\todo{which existing code? unclear}
  
-\textbf{Behavioural Model.} \label{sec:case-study-behaviour} Throughout modelling the use cases, we found out that there were sever analysis problems in three use cases, namely ``Remove User", ``Delete Role", and ``Remove Role", which stop the execution of the SUT and subsequently, the testing process. These use cases were not dealt with correctly; the related letters to a user or role, were not kept in the system in case of removing the user, deleting the role, or removing the role from the user, while it was explicitly specified in the requirements to keep the letter for other users and roles.
-Consequently, we excluded these use cases from our study. The behavioural model included about 170 LOC in the internal DSL.  
+\textbf{Behavioural Model.} \label{sec:case-study-behaviour} The process of modelling the use cases uncovered analysis problems in three use cases. These use cases (``Remove User", ``Delete Role", and ``Remove Role") were excluded from the rest of the case study.
+\footnote{Letters of deleted users and roles did not were deleted, even though requirements said the system had to retain them.
+Inclusion of these use cases would lead to early discovery of error in the code and would result in ending the testing process.}
+The behavioural model included about 170 LOC in the internal DSL.  
 
 \subsubsection{Test Execution and Result}
 \label{sec:case-study-result}
-After generating or defining the required models, the system was tested using the test goals and constrains, shown in Table~\ref{tbl:case-study-goals}. The test goals were defined incrementally starting with executing all short use cases and then longer paths covering complex use cases. We also tested the system in order to generate exceptions. All the computations were performed in one thread and each use case execution took about half a second, which could be improved by increasing the number of threads.	
+After defining the required models, the system was tested using the test goals and constrains shown in Table~\ref{tbl:case-study-goals}. The test goals were defined incrementally starting with executing all short use cases, then longer paths covering complex use cases. We also tested the system in order to generate exceptions. All the computations were performed in one thread and each use case execution took about half a second, this could be improved by a concurrent implementation.
 
 \begin{table}[!t]
 \caption{Test goals for the case study.}
@@ -85,15 +89,15 @@ Total & 1137 & 572 (10 mins) \\
 \end{tabular}
 \end{table}
 
-Although the system was verified and approved by the customer throughout several iterations, we found out quite significant problems in different levels, including implementation, analysis, and requirement specification. For example, in the implementation level, we found out that the system generally accepts ``empty" strings  which, in some cases, is explicitly forbidden (e.g.,\ user name, password, and role name) and, in some cases, is unclear if it is permissible or not, due ambiguity in requirements (e.g.,\ content and title of a mail). We also found out that the system allows a role sends an internal mail to herself, while the system does not create any internal mail\footnote{The output of Alloy finding this error is available at \url{http://ce.sharif.edu/~jalalinasab/bug1.xml}} .
+Although the system was approved and graded in several iterations, the case-study uncovered significant problems on different levels, including implementation, analysis, and requirement specification. For example, in the implementation level, we found out that the system generally accepts ``empty" strings, which were explicitly forbidden by requirements (e.g.,\ user name, password, and role name).  In some cases, requirements were ambiguous (e.g.,\ content and subject). We also found  the system allows a role sends an internal mail to herself, while the system does not create any internal mail\footnote{The output of Alloy finding this error is available at \url{http://ce.sharif.edu/~jalalinasab/bug1.xml}} .
 
-The problems in the analysis were explained in Sec~\ref{sec:case-study-behaviour}. In requirements specification, it was not clear if an internal mail to the direct upper manager needs to be approved or not\footnote{The output of Alloy finding this error is available at \url{http://ce.sharif.edu/~jalalinasab/bug4.xml}}. 
+Sec~\ref{sec:case-study-behaviour}. discusses an analysis-level issue uncovered by the study. In requirements specification, it was not clear if an internal mail to the direct manager requires approval or not\footnote{The output of Alloy finding this error is available at \url{http://ce.sharif.edu/~jalalinasab/bug4.xml}}. 
 
 \subsection{Line Coverage}
 \label{sec:case-study-line-coverage}
-To evaluate the line coverage of our testing framework, we used EMMA\footnote{EMMA – http://emma.sourceforge.net/}, which manipulates the executable bytecode to find out which line is executed or not. The line coverage of the aforementioned test cases are shown in Table~\ref{tbl:case-study-coverage}. The ``Unrelated" refers to the classes for the use cases excluded in the study, which has not been specified for the business logic, as it was hard and impossible to clearly determine \textit{unrelated} code.
+We used EMMA\footnote{EMMA – http://emma.sourceforge.net/}, to measure the line coverage of tests generated by our framework (Table~\ref{tbl:case-study-coverage}). ``Unrelated" refers to the classes for the use cases excluded from the study. We did not exclude ``unrelated'' use cases from business logic, as it was hard to clearly determine \textit{unrelated} code.
 
-Excluding the ``Unrelated" code, the coverage for UI and business logic were \%90 and \%73 which results in total coverage of \%90, achieved without writing any test script, and is a high coverage for a non-trivial system.
+Excluding the ``Unrelated" code, the coverage for UI and business logic were 90\% and 73\% achieved without writing any test script. 
 
 \begin{table}[!t]
 \caption{Line coverage for the case study.}
@@ -110,11 +114,9 @@ Business Logic & 526	& 159 & - & 685 \\
 
 \subsection{Mutation Testing}
 \label{sec:case-study-mutation}
-In order to assess the effectiveness of the proposed testing framework, mutation testing was used, in addition to line coverage. To do so, the PIT\footnote{PIT – \url{http://pitest.org/}} mutation generator tool was used. The main reason for choosing this tool was its applicability on large projects. The tool analyses the execution flow of use cases and accordingly, optimises the mutation generation processes, by determining proper mutation locations, prioritising the executions of use cases, and finding use cases for mutations. Another important feature of this tool is that the mutations are done on Java bytecode.
+We also measured the mutation score of the generated tests using the PIT\footnote{PIT – \url{http://pitest.org/}} mutation generator tool was used. The default mutation operators supported in this tool were used in the case study, including 1) mutations in boundary values, 2) mutations by negation of conditions, 3) mutations in computational operators, 4) mutations in increment/decrement operators, 5) mutations in return values, and 6) mutations in methods with no return value.
 
-The default mutation operators supported in this tool were used in the case study, including 1) mutations in boundary values, 2) mutations by negation of conditions, 3) mutations in computational operators, 4) mutations in increment/decrement operators, 5) mutations in return values, and 6) mutations in methods with no return value.
-
-The test cases used for line coverage (Table~\ref{tbl:case-study-goals}) were used for mutation testing, as well. The summary of the result is provided in Table~\ref{tbl:case-study-mutation-operators} and Table~\ref{tbl:case-study-mutation-modules}, showing the results respectively based on the mutation operators and the modules. Overally, \%56 of the mutants were killed while the mutations in the lines that were not covered by the test cases, have been considered. Accordingly, having these mutants excluded, the mutation score will be \%68 and \%79 respectively, for the UI and business logic modules. The low mutation score for the UI module is due to difficulties in identifying the method calls that are for updating the representation of the UI. 
+The summary of the results are provided in Table~\ref{tbl:case-study-mutation-operators} and Table~\ref{tbl:case-study-mutation-modules}, showing the results grouped by mutation operators and modules respectively. Overally, 56\% of the mutants were killed. This calculatoin includes mutants in lines of code not covered by the tests. Excluding these mutants raises the mutation score to 68\% for UI code and 79\% for business logic code. The low mutation score for the UI module may be due to difficulties in identifying the method calls that are for updating the representation of the UI. \todo{last sentence is weird}
 However, the achieved mutation scores indicate that the generated test cases are able to distinguish between the main program and the acceptable number of mutants particularly where the code is covered by test cases.
 
 \begin{table}[!t]
@@ -148,18 +150,20 @@ Business Logic & 38 & 141 & 72 & 251 \\
 \end{tabular}
 \end{table}
 
+\todo{maybe move to discussion, since not really an evaluation of anything}
 \subsection{Use Case Coverage}
 \label{sec:case-study-usecase-coverage}
-A very related coverage criteria to the testing framework is the \textit{use case coverage} which is classified into two types: 1) each use case has to be executed, at least, one time regardless of the execution paths inside the use case, and 2) all execution paths inside each use case have to be covered.
+Our testing framework can easily provide \textit{use case coverage}, using user-defined test goals. The tested can enforce the inclusion of each use case has to, at least, once regardless of the execution paths inside the use case, or that all execution paths inside each use case need to be covered.
 
-The first type can be easily achieved by the proposed framework via (i) putting \texttt{some [signature corresponding to the use case]}, for each use case, in the predicate defining the test goals, and (ii) increasing the search scope so that Alloy can find a solution. 
+The first type can be easily achieved by the proposed framework by (i) adding \texttt{some [signature corresponding to the use case]}, for each use case in the predicate defining the test goals, and (ii) increasing the search scope so that Alloy can find a solution. 
 
-For the second type of use case coverage, the tester needs to define valid internal execution paths for each use case, in the behavioural model, and accordingly defines related signature for them. Then, Alloy Analyser is forced to cover specific paths by putting texttt{some [signature corresponding to the use case]\_[name of the execution path]} in the predicate defining the test goals, and incrementally increase the search scope.
+For the second type of use case coverage, the tester needs to define valid internal execution paths for each use case in the behavioural model. Alloy Analyser can be forced to cover specific paths by putting texttt{some [signature corresponding to the use case]\_[name of the execution path]} in the predicate defining the test goals and incrementally increase the search scope.
 
 Nevertheless, an execution path may imply different concrete (or actual) paths. For example, it may have an input with a partitioning which requires to choose an input for each of the partitions. Also, there could be various paths resulting in a failed use case. In all of these cases, the tester has to specifically, model the internal execution paths to achieve the coverage  based on the internal paths, as such the coverage is up to the paths specified by the tester which may however, not be included in the search space. In fact, an enough large search scope would result in complete coverage which is typically impossible in practice.
 
+\todo{maybe move to discussion, since not really an evaluation of anything}
 \subsection{Coverage based on Input Partitioning}
 \label{sec:case-study-partitioning-coverage}
 Another type of coverage criteria is based on the partitioning of the input domain. The testing framework creates all the permutations of the states and by choosing the two built-in test goals (complete execution of use cases and exceptions) the generated tests will cover all the state permutations. In fact, as the number of partitions are typically small, by choosing an enough large search scope all the permutations would be considered in the testing, i.e.,\ complete coverage.
 
-Note that the labels of the domain objects also imply extra partitioning for the input domain and considering them as input partitioning would result in the challenging problem of determining the search scope.
+Note that the labels of the domain objects also imply partitioning for the input domain and considering them as input partitioning would result in the challenging problem of determining the search scope.

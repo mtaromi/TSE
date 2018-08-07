@@ -2,47 +2,41 @@
 %		Introduction
 %
 \label{sec:introduction}
-\todo{update with changes from abstract}
-\IEEEPARstart{T}{ests} are costly to develop, and they can become complex and difficult to maintain~\cite{Farago2010a}. Software
-projects spend up to 50\% of resources on testsing, according to estimates~\todo{citation needed}.
+%\todo{update with changes from abstract}
+\IEEEPARstart{T}{esting} plays an invaluable role in software development as a quality assurance measure, estimates show up testing uses up to 50\% of resources on projects~\cite{Beizer1990}. However, tests are costly to develop, and they can become complex and difficult to maintain~\cite{Farago2010a}. Unfortunately, determining what tests to write is a difficult task and is often left to the discretion and experience of the individual developer.
 
-Automated Model-Based Testing (MBT) offers a promising solution to this problem~\cite{Tretmans2008}: automatically generating tests from high-level behavioural models side-steps the need to write and maintain tests manually.
-This generative approach to testing reduces the cost of creating and maintaining tests. The models are at a higher level
-of abstraction (making changes easier), and automated generation process obviates the need of making a single 
-change in many test scripts. 
+Automated Model-Based Testing (MBT) offers a promising solution to this problem~\cite{Tretmans2008}: automatically generating tests from high-level behavioural models side-steps the need to write and maintain tests manually. 
+This generative approach to testing reduces the cost of creating and maintaining tests. The models are at a higher level of abstraction (making changes easier), and automated generation process obviates the need of making a single change in many test scripts. 
 As an added benefit, MBT takes a systematic approach to test generation, so it is easier to determine what is covered more confidently.
 
-However, practices prescribed by MBT are not particularly synergetic with those prescribed by lightweight software development processes~\cite{Farago2010a}, as they generally discourage the proliferation of models and dealing with the burden of 
-keeping them up-to-date with code changes. 
-MBT requires models different than those developed during general software analysis and design, or may require
-additional details not typically included, thus making things seem worse.\todo{needs examples for both}
+However, practices prescribed by MBT are not particularly synergetic with those prescribed by lightweight software development processes~\cite{Farago2010a}, as they generally discourage the proliferation of models and dealing with the burden of keeping them up-to-date with code changes. 
+MBT requires models different than those developed during general software analysis and design, or may require additional details not typically included (e.g.,\ describing properties in temporal logic languages~\cite{Tan2004}), thus making things seem worse. %\todo{needs examples for both}
 
-This research introduces a minimalistic set of structural and behavioural models that can be used as a basis for MBT in the
-context of a lightweight software development process. The models are intuitive and accessible to practitioners: no particular modelling or model-based testing knowledge is required. These models are either normally produced during the development process,
-or have been kept very simple, if they are needed only for test generation.
+This research introduces a minimalistic set of structural and behavioural models that can be used as a basis for MBT in the context of a lightweight software development process. The models are intuitive and accessible to practitioners: no particular modelling or model-based testing knowledge is required. These models are either normally produced during the development process, or have been kept very simple, if they are needed only for test generation.
 
-Lightweight methodologies typically focus on unit testing~\cite{Ambler2008,Ambler}, in part due to associated technical difficulties
-with acceptance testing (i.e, end to end testing)\todo{citation needed, what are these difficulties}. Our approach focuses on
-acceptance testing.
- 
+Lightweight methodologies typically focus on unit testing, in part due to associated technical difficulties with acceptance testing (i.e, end to end testing)~\cite{Ambler2008,Ambler}. For example, statistics show that requirements specifications are still commonly captured in the form of documents. 
+%\todo{this paragraph does not belong, move to related work?}
+In this context, existing studies on the opportunity of benefiting from MBT in lightweight approaches and vice versa (e.g.,~\cite{Katara2006,Farago2010b,Loffler2010,Ussami2016}), by large, have focused on unit testing. Our approach focuses on acceptance testing.
+A comprehensive study on the application of MBT in lightweight processes has been provided in our earlier work~\cite{Jalalinasab2012}. 
+
+%\todo{citation needed, what are these difficulties}. 
+%In this context, our approach focuses on acceptance testing.
 %, and secondly, there are several unit testing proposals that can be directly used in such methodologies 
 % (e.g.,~\cite{Beck2002,Farago2010a}). 
-
-
-\todo{this paragraph does not belong, move to related work?}
-There are several studies on the  opportunity of benefiting from MBT in lightweight approaches and vice versa (e.g.,~\cite{Katara2006,Farago2010b,Loffler2010,Ussami2016}). A comprehensive study on the application of MBT in lightweight processes has been provided in our earlier work~\cite{Jalalinasab2012}.
-
+ 
 
 Automated acceptance testing techniques are generally either (1) script-based, or (2) based on system behavioural models. 
-In \textit{script-based techniques}, developers convert informal requirements, one by one, from natural language to executable tests by writing test cases in a scripting language or library specified by a framework. The FIT~\footnote{FitNesse – \url{http://fitnesse.org}} and Cucumber~\footnote{Cucumber – \url{http://cukes.info}} frameworks, used in Acceptance Test Driven Development (ATDD)~\cite{Pugh2011} are examples of such techniques. This approach sufferes from a low abstraction level and results in brittle, high-maintenance tests which must be developed and maintained individually. 
+In \textit{script-based techniques}, developers convert informal requirements, one by one, from natural language to executable tests by writing test cases in a scripting language or library specified by a framework. The FIT~\footnote{FitNesse – \url{http://fitnesse.org}} and Cucumber~\footnote{Cucumber – \url{http://cukes.info}} frameworks, used in Acceptance Test Driven Development (ATDD)~\cite{Pugh2011} are examples of such techniques. This approach suffers from a low abstraction level and results in brittle, high-maintenance tests which must be developed and maintained individually. 
 Techniques \textit{based on system behavioural models} generate tests from formal models of system behaviour, such as use cases (e.g.,~\cite{Nebut2006,Sarma2007,Kaplan2008}). These models implicitly define many valid execution paths for the system under test (SUT). %Complex models are usually requisited for these approaches, making them inappropriate for lightweight processes.
-Deriving tests based on behavioural models addresses the abstraction level problem of script-based testing. However, the models require can be complex and inappropriate for lightweight processes.\todo{too much repetition of this} 
+Deriving tests based on behavioural models addresses the abstraction level problem of script-based testing. However, the require models can be complex and inappropriate for lightweight processes.%\todo{too much repetition of this} 
 
-In an aim to combine the best of both approaches, this paper presents an acceptance testing technique based on system behavioural models, using simple models, thus remaining practical for application in agile processes\todo{we go back and forth between agile/lightweight for no reason}. The proposed method uses class diagrams and use cases, that are considered as the most useful models in software development~\cite{Erickson2007,Erickson2008}\todo{why is this relevant?}. 
+In an aim to combine the best of both approaches, this paper presents an acceptance testing technique based on system behavioural models, using simple models, thus remaining practical for application in lightweight processes.%\todo{we go back and forth between agile/lightweight for no reason}. 
+The proposed method uses class diagrams and use cases, that are considered as the most useful models in software development~\cite{Erickson2007,Erickson2008}\todo{why is this relevant?}. 
 
 %The proposed approach is in fact an implementation of  the ``Directing testing by modelling the permissible order of operations" and %``Using static analysis" patterns that were introduced for applying MBT in agile/lightweight processes in our earlier %work~\cite{Jalalinasab2012}. \todo{not relevant, move to related work}
 
-Fig.~\ref{fig:framework-structure} shows the overall structure of the proposed testing framework \todo{it may be better to come up with a name for our approach so we can reference it} that has been tailored to data-oriented systems. Tests are generated from (1) a structural model of the doman (class diagram), (2) use cases, as the behavioural model, and (3) a static analyser (i.e.,\ Alloy~\cite{Jackson2002}). The models are automatically translated into Alloy specifications. The solutions to the Alloy models are translated into executable test cases which the test driver and test harness components use to drive the SUT.
+Fig.~\ref{fig:framework-structure} shows the overall structure of the proposed testing framework that has been tailored to data-oriented systems. Tests are generated from (1) a structural model of the domain (class diagram), (2) use cases, as the behavioural model, and (3) a static analyser (i.e.,\ Alloy~\cite{Jackson2002}). We use Alloy as a specification language~\cite{Jackson2002}, and the Alloy Analyser as the analysis engine. Alloy is a formal specification language based on first order logic, optimized for automated analysis.
+The models are automatically translated into Alloy specifications. The solutions to the Alloy models are translated into executable test cases which the test driver and test harness components use to drive the SUT.
 
 \begin{figure}[!t]
 \centering
@@ -56,20 +50,18 @@ contributions:
 \begin{itemize}
 	\item \textit{Lightweight model-based acceptance testing.} We develop a lightweight testing framework with detailed description on how the approach is used from testers' perspective.
 	
-	\item \textit{Behavioural modelling DSLs.} We develop a set of simple DSLs for behavioural modelling.\todo{is this really
-	a research contribution?}
+	\item \textit{Behavioural modelling DSLs.} We develop a set of simple DSLs for behavioural modelling.\todo{is this really a research contribution?}
 	
 	\item \textit{Implementation.} We provide the DSL used to create test models, the code that
-	performs the model transformation to Alloy's native language, and the test driver and harness code necesssary to execute test cases on the SUT.
+	performs the model transformation to Alloy's native language, and the test driver and harness code necessary to execute test cases on the SUT.
 	\todo{are we going to share the code, we have to.}
 
 	\item \textit{Case-study. } We evaluated the proposed framework's applicability by demonstrating the feasibility of applying it to 
 a medium-sized business application with reasonable resources.
 We evaluated the effectiveness of the approach by comparing conventional test quality metrics (line coverage and mutation score)
-to manually developped tests and also discuss bugs uncovered during the case study.
+to manually developed tests and also discuss bugs uncovered during the case study.
 
 \end{itemize}
 
 \textit{Outline.} The remainder of this paper is organized as follows.  %Section~\ref{sec:background} provides the background knowledge required to understand the contributions of our work.\todo{remove?}
-
 Section~\ref{sec:running-example} explains the running example used to illustrate the testing framework. Section~\ref{sec:framework-overview} provides an overview of the proposed testing framework. Sections~\ref{sec:create-test-model} and~\ref{sec:test-generation-execution} describe the details of creating test models and test generation and execution, respectively. Section~\ref{sec:evaluation} presents the evaluation of the approach. Finally, the paper concludes with a discussion of limitations, and an outline of the related research and future work.

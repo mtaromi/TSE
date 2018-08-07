@@ -18,7 +18,7 @@ The Alloy Analyser~\cite{Jackson2000} is an automatic tool for analysing models 
 
 \subsection{Generated Alloy Model}
 \label{sec:test-generation-execution-alloy-models}
-The test models described in Section~\section{xxx} are automatically translated into Alloy specifications consisting of six \texttt{modules}, that are defined in separate Alloy files (.als). These modules and their dependencies are shown in Fig.~\ref{fig:alloy-specifications}, and include:
+The test models described in Section~\ref{sec:framework-overview} are automatically translated into Alloy specifications consisting of six \texttt{modules}, that are defined in separate Alloy files (.als). These modules and their dependencies are shown in Fig.~\ref{fig:alloy-specifications}, and include:
 
 \begin{enumerate}
 	\item \texttt{system\_def\_auto}: translation of the domain structural model (EMF diagram),
@@ -40,7 +40,7 @@ The rest of this section describes the details of the model transformation for e
 
 \subsection{Structure Model}
 \label{sec:alloy-structure}
-The EMF model of the system is automatically translated into an Alloy specification, using the Xpand\footnote{Xpand – \url{http://eclipse.org/modeling/m2t/?project=xpand}} model-to-text transformation language. Fig.~\ref{fig:library-alloy-structure} shows the automatically generated Alloy specification for the structure of the example library system. Each class is translated into a signature. Each association is represented by a field in the respective signature (lines 9-11 and lines 17-19). The multiplicity\todo{is that the right word?} of a relation affects the definition of the fields. Abstract signatures are used for modelling abstract classes. Class inheritance is implemented using the inheritance concept in Alloy.
+The EMF model of the system is automatically translated into an Alloy specification, using the Xpand\footnote{Xpand – \url{http://eclipse.org/modeling/m2t/?project=xpand}} model-to-text transformation language. Fig.~\ref{fig:library-alloy-structure} shows the automatically generated Alloy specification for the structure of the example library system. Each class is translated into a signature. Each association is represented by a field in the respective signature (lines 9-11 and lines 17-19). The multiplicity of a relation affects the definition of the fields. Abstract signatures are used for modelling abstract classes. Class inheritance is implemented using the inheritance concept in Alloy.
 
 \begin{figure}[h]
 \centering
@@ -78,12 +78,12 @@ The next step is to translate the use case descriptions into Alloy. Each use cas
 \label{fig:library-alloy-return-book-signature}
 \end{figure}
 
-Each use case predicate takes atoms representing the system state before and after the use case is executed. An atom of the signature of the use case provides access to the inputs. This predicate essentially defines the constraints for creating the subsequent state. Fig.~\ref{fig:library-alloy-return-book-predicate} shows the predicate for ``Return Book". This predicate consists of the following parts: defining the domain of the input parameters (lines 2-5), defining pre-conditions (lines 6-10), specifying the frame conditions (lines 11-20), and defining the post-conditions (lines 21-24). \todo{move these to figure caption}
+Each use case predicate takes atoms representing the system state before and after the use case is executed. An atom of the signature of the use case provides access to the inputs. This predicate essentially defines the constraints for creating the subsequent state. Fig.~\ref{fig:library-alloy-return-book-predicate} shows the predicate for ``Return Book". This predicate consists of the following parts: defining the domain of the input parameters, defining the pre-conditions, specifying the frame conditions, and defining the post-conditions.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.5\textwidth]{../Figures/library-alloy-return-book-predicate.png}
-\caption{The predicate for the ``Return Book" use case.}
+\caption{The predicate for the ``Return Book" use case, describing the input parameters (lines 2-5), the pre-conditions (lines 6-10), the frame conditions (lines 11-20), and the post-conditions (lines 21-24).}
 \label{fig:library-alloy-return-book-predicate}
 \end{figure}
 
@@ -149,13 +149,13 @@ The main module is static and is independent of the SUT and its models. The modu
 \centering
 \includegraphics[width=0.5\textwidth]{../Figures/alloy-main-apply.png}
 \caption{The \texttt{apply} predicate for the example library system.}
-\label{fig:lalloy-main-apply}
+\label{fig:alloy-main-apply}
 \end{figure}
 
 If the test goal is to generate exceptional states, line 21 is commented out and line 22 is uncommented. This applied the \texttt{fail\_apply} predicate to the final state. The predicate is similar to predicate \texttt{apply} except that it includes the negative predicates for the use cases. In this case, valid paths of length three are tested and then an exceptional operation is attempted at the final state. Exceptions cannot alter the domain model and therefore including them in the middle of a path is useless.
 
 \subsection{Generated Test Cases}
 \label{sec:alloy-test-cases}
-For the example library system, Alloy generates 73 test cases with the search scope given in Fig.~\ref{fig:alloy-main-module}. One of the test cases is depicted in Appendix~\ref{app:library-testcases}, Fig.~\ref{fig:library-testcase}. The active use case in each state is shown by a diamond. The atom \texttt{System} is shown by gray rectangle and the atoms of the domain model are shown by bold rectangle. The labels and input data are respectively shown by eclipse and dashed lines.\todo{move to figure label or legend}
+For the example library system, Alloy generates 73 test cases with the search scope given in Fig.~\ref{fig:alloy-main-module}, line 30 (i.e.,~\texttt{run testSystem for 5 but 4 State}). One of the test cases is depicted in Appendix~\ref{app:library-testcases}, Fig.~\ref{fig:library-testcase}. 
 
-If the test goal is to generate exceptions (i.e.\ using the \texttt{fail\_apply} predicate), for the search scope of size one, five test cases are generated which are shown in Appendix~\ref{app:library-testcases}. Fig.~\ref{fig:library-exceptions-testcase-1} represents a test case that attempts to remove a member that has borowed a book. Fig.~\ref{fig:library-exceptions-testcase-2} shows a test case that attempts to deleted a book that has been borrowed. Fig.~\ref{fig:library-exceptions-testcase-3} illustrates an invalid borrow operation. Fig.~\ref{fig:library-exceptions-testcase-4} and Fig.~\ref{fig:library-exceptions-testcase-5} try to add a book with empty name and a book with a duplicate name (\texttt{Book0}), respectively.\todo{move to table}
+If the test goal is to generate exceptions (i.e.\ using the \texttt{fail\_apply} predicate), for the search scope of size one, five test cases are generated which are shown in Appendix~\ref{app:library-testcases}. Fig.~\ref{fig:library-exceptions-testcase-1} represents a test case that attempts to remove a member that has borowed a book. Fig.~\ref{fig:library-exceptions-testcase-2} shows a test case that attempts to deleted a book that has been borrowed. Fig.~\ref{fig:library-exceptions-testcase-3} illustrates an invalid borrow operation. Fig.~\ref{fig:library-exceptions-testcase-4} and Fig.~\ref{fig:library-exceptions-testcase-5} try to add a book with empty name and a book with a duplicate name (\texttt{Book0}), respectively.\todo{move to table}\todo{@Masoumeh: which table??}

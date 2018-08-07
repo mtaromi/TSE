@@ -2,7 +2,26 @@
 % 	Discussion
 %
 \label{sec:discussion}
-The work presented here is inspired by TestEra, presented by Khurshid et al.~\cite{Khurshid2004}, in which tests are generated using Alloy. Our work however, substantially differs from TestEra: 1) TestEra focuses on unit testing (tests are defined at method level) whereas this work, use cases and their execution sequence are used for test generation (i.e.,\ acceptance testing), and 2) in TestEra, the Alloy specifications are created manually and therefore required testers to learn Alloy's modelling language.
+\subsection{Coverage}
+\label{sec:discussion-coverage}
+Our testing framework can easily provide \textit{use case coverage}, using user-defined test goals. The tester can enforce the inclusion of each use case, at least, once regardless of the execution paths inside the use case, or enforce that all execution paths inside each use case to be covered.
+
+The first type can be easily achieved by the proposed framework by (i) adding \texttt{some [signature corresponding to the use case]}, for each use case in the predicate defining the test goals, and (ii) increasing the search scope so that Alloy can find a solution. 
+
+For the second type of use case coverage, the tester needs to define valid internal execution paths for each use case in the behavioural model. Alloy Analyser can be forced to cover specific paths by putting \texttt{some [signature corresponding to the use case]\_[name of the execution path]} in the predicate defining the test goals and incrementally increase the search scope.
+
+Nevertheless, an execution path may imply different concrete (or actual) paths. For example, it may have an input with a partitioning which requires to choose an input for each of the partitions. Also, there could be various paths resulting in a failed use case. In all of these cases, the tester has to specifically, model the internal execution paths to achieve the coverage  based on the internal paths, as such the coverage is up to the paths specified by the tester which may however, not be included in the search space. In fact, an enough large search scope would result in complete coverage which is typically impossible in practice.
+
+%\subsection{Coverage based on Input Partitioning}
+%\label{sec:case-study-partitioning-coverage}
+Another related coverage criteria is based on the partitioning of the input domain. 
+The testing framework creates all the permutations of the states, and by choosing the two built-in test goals (complete execution of use cases and exceptions) the generated tests will cover all the state permutations. In fact, as the number of partitions are typically small, by choosing an enough large search scope all the permutations would be considered in the testing, i.e.,\ complete coverage.
+
+Note that the labels of the domain objects also imply partitioning for the input domain and considering them as input partitioning would result in the challenging problem of determining the search scope.
+
+\subsection{Relation to Similar Studies}
+\label{sec:discussion-similar}
+Although the work presented here is inspired by TestEra~\cite{Khurshid2004}, in which tests are generated using Alloy, our work substantially differs from TestEra: 1) TestEra focuses on unit testing (tests are defined at method level) whereas in this work, use cases and their execution sequence are used for test generation (i.e.,\ acceptance testing), and 2) in TestEra, the Alloy specifications are created manually and therefore required testers to learn Alloy's modelling language.
 
 Another similar work is~\cite{Kaplan2008}, in which tests are automatically generated from the formal specification of requirements and the class diagram. The data types are limited to Integers and the verification is performed by a set of fault models to mutate an object diagram. Using a formal language, limiting to Integer data types, and verification based on fault models are the main limitations of that work compared to this.
 
@@ -11,8 +30,10 @@ Similarly,~\cite{Cavarra2002}, which mainly uses state diagrams for describing r
 
 Testing based on ``virtual contracts"~\cite{Engels2006} is similar to our work as such they are analogous to pre-/post-conditions. However, that work focuses on unit testing. Also, testers would be more familiar with our internal Java-based DSL in comparison to virtual contracts.
 
-Consequently, in the context of lightweight processes, our framework has advantages over the previous and similar studies by 1) using lightweight and situational models, 2) automatically generating test execution paths, 3) providing flexible methods for generating test data and verification, and 4) providing traceability to requirements.
+Consequently, our framework has advantages over the previous and similar studies by 1) using lightweight and situational models, 2) automatically generating test execution paths, 3) providing flexible methods for generating test data and verification, and 4) providing traceability to requirements.
 
+\subsection{Limitations}
+\label{sec:discussion-limitations}
 Nevertheless, the presented testing framework has made few assumptions about the system under test and the methodology used for its development. Also, similar to any approach based on static analysis, our proposal is subject to constraints caused by using this technique. The assumptions and limitations are as follow.
 
 \begin{itemize}
@@ -31,4 +52,4 @@ Nevertheless, the presented testing framework has made few assumptions about the
 	\item The mapping between the input parameters and the conditional statements, to the domain objects can be done easily.
 \end{itemize}
 
-It is worth noting that this work applies well too testing data-oriented systems developed using lightweight development processes, as these assumptions and limitations do not hamper the application and benefits of the framework in practice. Our case study, in particular, demonstrates the applicability and effectiveness of the proposed framework in testing a typical, non-trivial software application. It shows that in addition to implementation errors, the framework can identify problems in analysis and ambiguities in requirements specifications, even throughout the development of a system that is iteratively delivered and approved by stakeholders.
+It is worth noting that this work applies well to testing data-oriented systems developed using lightweight development processes, as these assumptions and limitations do not hamper the application and benefits of the framework in practice. Our case study, in particular, demonstrates the applicability and effectiveness of the proposed framework in testing a typical, non-trivial software application. It shows that in addition to implementation errors, the framework can identify problems in analysis and ambiguities in requirements specifications, even throughout the development of a system that is iteratively delivered and approved by stakeholders.

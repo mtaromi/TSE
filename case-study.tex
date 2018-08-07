@@ -2,12 +2,12 @@
 % 	Case Study
 %
 \label{sec:evaluation}
-To assess the effectiveness and applicability of our approach, we conducted a case study on a non-trivial business application. We present measures of test coverage including line coverage and mutation score to provide a comparison with manually developped tests. 
+To assess the effectiveness and applicability of our approach, we conducted a case study on a non-trivial business application. We present measures of test coverage including line coverage and mutation score to provide a comparison with manually developed tests. 
 
 
 \subsection{Case Study}
 \label{sec:evaluation-case-study}
-The subject program is an internal mailing system, developed as a desktop application. The system was developed throughout an iterative-incremental process using Java language by a team of undergraduate students as a final project. The authors of this study implemented the framework described in section~\section{xxx} on the code developed by one of the student groups.
+The subject program is an internal mailing system, developed as a desktop application. The system was developed throughout an iterative-incremental process using Java language by a team of undergraduate students as a final project. The authors of this study implemented the framework described in section~\ref{sec:create-test-model} on the code developed by one of the student groups.
 The code consists of approximately 1000 LOC in business logic and 6000 LOC in UI logic.
 
 Students documented the requirements and use cases were in an analysis phase, and most of the use cases are include sending and manipulating the internal mails. The system was developed incrementally, and a working system was delivered at the end of each iteration to the course graders.
@@ -60,7 +60,7 @@ In the case study, we have focused on 15 use cases listed in Fig.~\ref{fig:case-
 \label{fig:case-initial-state}
 \end{figure}
 
-\textbf{Test Harness.} The test harness was developed for our case study and it consists of about 300 LOC. To connect the SUT to the test driver, we used the uispec4j\footnote{ uispec4 – http://uispec4j.org} library. Additionally, most of the existing code were reused for developing the ``Inspector" component.\todo{which existing code? unclear}
+\textbf{Test Harness.} The test harness was developed for our case study and it consists of about 300 LOC. To connect the SUT to the test driver, we used the uispec4j\footnote{ uispec4 – http://uispec4j.org} library. Additionally, most of the existing code of the system were reused for developing the ``Inspector" component.%\todo{which existing code? unclear}
  
 \textbf{Behavioural Model.} \label{sec:case-study-behaviour} The process of modelling the use cases uncovered analysis problems in three use cases. These use cases (``Remove User", ``Delete Role", and ``Remove Role") were excluded from the rest of the case study.
 \footnote{Letters of deleted users and roles did not were deleted, even though requirements said the system had to retain them.
@@ -116,7 +116,7 @@ Business Logic & 526	& 159 & - & 685 \\
 \label{sec:case-study-mutation}
 We also measured the mutation score of the generated tests using the PIT\footnote{PIT – \url{http://pitest.org/}} mutation generator tool was used. The default mutation operators supported in this tool were used in the case study, including 1) mutations in boundary values, 2) mutations by negation of conditions, 3) mutations in computational operators, 4) mutations in increment/decrement operators, 5) mutations in return values, and 6) mutations in methods with no return value.
 
-The summary of the results are provided in Table~\ref{tbl:case-study-mutation-operators} and Table~\ref{tbl:case-study-mutation-modules}, showing the results grouped by mutation operators and modules respectively. Overally, 56\% of the mutants were killed. This calculatoin includes mutants in lines of code not covered by the tests. Excluding these mutants raises the mutation score to 68\% for UI code and 79\% for business logic code. The low mutation score for the UI module may be due to difficulties in identifying the method calls that are for updating the representation of the UI. \todo{last sentence is weird}
+The summary of the results are provided in Table~\ref{tbl:case-study-mutation-operators} and Table~\ref{tbl:case-study-mutation-modules}, showing the results grouped by mutation operators and modules respectively. Overally, 56\% of the mutants were killed. This calculation includes mutations in lines of code not covered by the tests. Excluding these mutants raises the mutation score to 68\% for UI code and 79\% for business logic code. The low mutation score for the UI module is basically because the test cases can not identify (and hence skip) the method calls that are for updating the representation of the UI. 
 However, the achieved mutation scores indicate that the generated test cases are able to distinguish between the main program and the acceptable number of mutants particularly where the code is covered by test cases.
 
 \begin{table}[!t]
@@ -139,7 +139,7 @@ Total & 125 & 327 & 129 & 581 \\
 
 \begin{table}[!t]
 \caption{Mutation testing result with respect to the modules.}
-\label{tbl:case-study-mutation-module}
+\label{tbl:case-study-mutation-modules}
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -150,20 +150,20 @@ Business Logic & 38 & 141 & 72 & 251 \\
 \end{tabular}
 \end{table}
 
-\todo{maybe move to discussion, since not really an evaluation of anything}
-\subsection{Use Case Coverage}
-\label{sec:case-study-usecase-coverage}
-Our testing framework can easily provide \textit{use case coverage}, using user-defined test goals. The tested can enforce the inclusion of each use case has to, at least, once regardless of the execution paths inside the use case, or that all execution paths inside each use case need to be covered.
-
-The first type can be easily achieved by the proposed framework by (i) adding \texttt{some [signature corresponding to the use case]}, for each use case in the predicate defining the test goals, and (ii) increasing the search scope so that Alloy can find a solution. 
-
-For the second type of use case coverage, the tester needs to define valid internal execution paths for each use case in the behavioural model. Alloy Analyser can be forced to cover specific paths by putting texttt{some [signature corresponding to the use case]\_[name of the execution path]} in the predicate defining the test goals and incrementally increase the search scope.
-
-Nevertheless, an execution path may imply different concrete (or actual) paths. For example, it may have an input with a partitioning which requires to choose an input for each of the partitions. Also, there could be various paths resulting in a failed use case. In all of these cases, the tester has to specifically, model the internal execution paths to achieve the coverage  based on the internal paths, as such the coverage is up to the paths specified by the tester which may however, not be included in the search space. In fact, an enough large search scope would result in complete coverage which is typically impossible in practice.
-
-\todo{maybe move to discussion, since not really an evaluation of anything}
-\subsection{Coverage based on Input Partitioning}
-\label{sec:case-study-partitioning-coverage}
-Another type of coverage criteria is based on the partitioning of the input domain. The testing framework creates all the permutations of the states and by choosing the two built-in test goals (complete execution of use cases and exceptions) the generated tests will cover all the state permutations. In fact, as the number of partitions are typically small, by choosing an enough large search scope all the permutations would be considered in the testing, i.e.,\ complete coverage.
-
-Note that the labels of the domain objects also imply partitioning for the input domain and considering them as input partitioning would result in the challenging problem of determining the search scope.
+%\todo{maybe move to discussion, since not really an evaluation of anything}
+%\subsection{Use Case Coverage}
+%\label{sec:case-study-usecase-coverage}
+%Our testing framework can easily provide \textit{use case coverage}, using user-defined test goals. The tested can enforce the inclusion of each use case has to, at least, once regardless of the execution paths inside the use case, or that all execution paths inside each use case need to be covered.
+%
+%The first type can be easily achieved by the proposed framework by (i) adding \texttt{some [signature corresponding to the use case]}, for each use case in the predicate defining the test goals, and (ii) increasing the search scope so that Alloy can find a solution. 
+%
+%For the second type of use case coverage, the tester needs to define valid internal execution paths for each use case in the behavioural model. Alloy Analyser can be forced to cover specific paths by putting texttt{some [signature corresponding to the use case]\_[name of the execution path]} in the predicate defining the test goals and incrementally increase the search scope.
+%
+%Nevertheless, an execution path may imply different concrete (or actual) paths. For example, it may have an input with a partitioning which requires to choose an input for each of the partitions. Also, there could be various paths resulting in a failed use case. In all of these cases, the tester has to specifically, model the internal execution paths to achieve the coverage  based on the internal paths, as such the coverage is up to the paths specified by the tester which may however, not be included in the search space. In fact, an enough large search scope would result in complete coverage which is typically impossible in practice.
+%
+%\todo{maybe move to discussion, since not really an evaluation of anything}
+%\subsection{Coverage based on Input Partitioning}
+%\label{sec:case-study-partitioning-coverage}
+%Another type of coverage criteria is based on the partitioning of the input domain. The testing framework creates all the permutations of the states and by choosing the two built-in test goals (complete execution of use cases and exceptions) the generated tests will cover all the state permutations. In fact, as the number of partitions are typically small, by choosing an enough large search scope all the permutations would be considered in the testing, i.e.,\ complete coverage.
+%
+%Note that the labels of the domain objects also imply partitioning for the input domain and considering them as input partitioning would result in the challenging problem of determining the search scope.

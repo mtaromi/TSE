@@ -6,15 +6,15 @@ Fig.~\ref{fig:testing-framework} shows an overview of the proposed testing frame
 
 From testers' perspective, the following steps are involved in using our framework:
 \begin{enumerate}
-	\item Developing a domain model is specified using EMF~\cite{EMF}. 
+	\item Developing a domain model that is specified using EMF~\cite{EMF}. 
 	
-	\item Describing use cases with the provided DSL.
+	\item Describing use cases with the internal DSL.
 	
-	\item Describing the initial state of the system are described with the given DSL.
+	\item Describing the initial state of the system described with the given DSL.
 	
-	\item (Optionally) describe invariants of domain objects.
+	\item (Optionally) describing invariants of the domain objects.
 	
-	\item Identify and optionally partitoin input data types using a provided DSL. 
+	\item Identifying and optionally partitioning the input data types using the internal DSL. 
 	
 	\item Specifying the test scope.
 	
@@ -22,19 +22,15 @@ From testers' perspective, the following steps are involved in using our framewo
 	
 	\item All of the above models are automatically translated into Alloy's native modelling language.
 	
-	\item Alloy solves the model, yielding a set of execution traces. Each trace is a test cases and includes the required input values.
+	\item Alloy Analyser solves the model, yielding a set of execution traces. Each trace is a test case and includes the required input values.
 	
-	\item The test driver runs executes each test case on the SUT using the test harness. The SUT is reset to the initial state
-	before running the next test case.
+	\item The test driver executes each test case on the SUT using the test harness. The SUT is reset to the initial state before running the next test case.
 \end{enumerate}
 
 
-The \textit{primary models} required include use cases (translated from natural language to the specified DSL) and
-the an EMF class diagram.
-Additional \textit{subsidiary models} describe the initial state of the SUT, and optionally describes
-invariants between object states.
-
-The tester develops an SUT specific \textit{test harness} to mediate interaction with the test generation framework. The test harness consists of a \textit{data generator}, a \textit{command executor}, and an \textit{inspector}. \todo{??? describe these?}
+The \textit{primary models} include use cases (translated from natural language to the specified DSL) and an EMF class diagram.
+Additional \textit{subsidiary models} describe the initial state of the SUT, and optionally describe invariants between object states.
+The tester develops an SUT specific \textit{test harness} to mediate interaction between the test generation framework and the SUT. The test harness consists of a \textit{data generator}, a \textit{command executor}, and an \textit{inspector}. %\todo{??? describe these?}
 
 \begin{figure*}[ht]
 \centering
@@ -57,7 +53,7 @@ Defining ``object labels" avoids exposing internal representations to the model 
 
 \subsection{Behavioural Model}
 \label{sec:framework-overview-behaviour}
-The tester develops a behavioural model of the SUT based on system use cases. This model describs effects of the use case on domain objects. Generally, use cases do not have the required formalism which makes them insufficient for automatic test generation~\cite{}. Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases. This DSL provides the required formalism, yet remains familiar for the developer;  the behavioural model is constructed via chaining methods in a language that the developer is already familiar with (i.e.,\ Java).
+The tester develops a behavioural model of the SUT based on system use cases. This model describs effects of the use case on domain objects. Generally, use cases do not have the required formalism which makes them insufficient for automatic test generation~\cite{Beck2000}. Our approach utilizes an internal domain specific language (DSL) within Java for describing use cases. This DSL provides the required formalism, yet remains familiar for the developer;  the behavioural model is constructed via chaining methods in a language that the developer is already familiar with (i.e.,\ Java).
 
 Benefits of using a DSL as a modelling language include: 
 \begin{itemize}
@@ -83,7 +79,7 @@ Use cases are inherently not object-oriented, however we assume that mapping use
 
 \subsection{Test Data}
 \label{sec:framework-overview-test-data}
-Generating test data is one the main issues in automatic test generation~\cite{}. Input domain partitioning is a well known approach for generating test data~\cite{Ammann2008}. This approach partitions asks the tester to partitoin the input domain such that it is enough to test the system with only a single representative of every and each partition. This approach is particularly suited to the systems not involving complicated data manipulation and processing. 
+Generating test data is one the main issues in automatic test generation~\cite{Ferguson1996}. Input domain partitioning is a well known approach for generating test data~\cite{Ammann2008}. This approach partitions asks the tester to partitoin the input domain such that it is enough to test the system with only a single representative of every and each partition. This approach is particularly suited to the systems not involving complicated data manipulation and processing. 
 
 The framework allows the tester to specify input data types and their partitioning in a Java based DSL. The tester then provides a data generator (as executable code) for each partitioning according to the architecture prescribed by the framework. 
 
@@ -114,9 +110,12 @@ This component translates the structural and behavioural models into Alloy's nat
 \label{sec:framework-overview-static-analyser}
 The static analyser solves for a set of execution traces based on the the generated Alloy models. Alloy has a high-level specification language compared to CTL\footnote{CTL – Computation Tree Logic}, LTL\footnote{LTL – Linear Temporal Logic}, and first-order logic model analysis tools. The lower level of abstraction makes such languages not suitable targets for translating from high-level descriptions of system behavior.
 
-Alloy has its own specification language for software specification which is built on the set theory and relational calculus. Most of  other approaches based on set theory (e.g., Z~\cite{Spivey1992}) have weak execution support. One advantage of using Alloy is its ability to enumerate all possible solutions for a given set of constraints for which it is also called a Model Finder. Alloy converts the specification to a SAT problem\footnote{Boolean SATisfiability problem}, which is then solved using a SAT solver. The solution (if exists) is mapped back to a relational model. Using SAT solvers gives rise to the need for a finite search space. This also limits the solver to finding small instances of the solution space. The ``Small Scope Hypothesis" claims ``most flaws in models can be illustrated by small instances, since they arise from some shape being handled incorrectly, and whether the shape belongs to a large or small instance makes no difference. So if the analysis considers all small instances, most flaws will be revealed"~\cite{Jackson2012}. This claim has not been proved, however, previous work has demonstrated the usefulness of approaches subject to this constraint in finding errors in software and models~\cite{??{.
+Alloy has its own specification language for software specification which is built on the set theory and relational calculus. Most of  other approaches based on set theory (e.g., Z~\cite{Spivey1992}) have weak execution support. One advantage of using Alloy is its ability to enumerate all possible solutions for a given set of constraints for which it is also called a Model Finder. Alloy converts the specification to a SAT problem\footnote{Boolean SATisfiability problem}, which is then solved using a SAT solver. The solution (if exists) is mapped back to a relational model. Using SAT solvers gives rise to the need for a finite search space that limits the solver to finding small instances of the solution space.
+Searching within finite bounds is justified by the ``small scope hypothesis'', the fundamental premise that underlies Alloy’s analysis. The hypothesis claims ``most flaws in models can be illustrated by small instances, since they arise from some shape being handled incorrectly, and whether the shape belongs to a large or small instance makes no difference. So if the analysis considers all small instances, most flaws will be revealed"~\cite{Jackson2012}; systems that fail on large instances
+almost always fail on small ones with similar properties.
+This claim has not been proved and is fundamentally a claim about the assertions that arise in practice. %However, previous work has demonstrated the usefulness of approaches subject to this constraint in finding errors in software and models~\cite{}.
 
-\todo{move this to related works}
+%\todo{move this to related works}
 %In~\cite{Khorshid2004}, a method for generating tests for Java code using Alloy is introduced. This method works at the method level (single method) and Alloy specifications are written manually for method's pre- and post-conditions. Method's inputs are generated by Alloy based on pre-conditions, and after executing a method, the objects in the memory (heap) is compared with post-conditions (instances that alloy has found as solutions). The authors show that their method is effective for generating test cases throughout few case studies. 
 
 \subsection{Test Driver}
@@ -126,8 +125,8 @@ Each solution is a test case that includes: (1) a number of use cases with their
 and (2) a description of the final expected \textit{state} of the SUT if the test case is run from the initial state.
 The state of the SUT consists of a snapshot of the objects of the domain model at a particular moment. 
 
-The driver instructs the harness to reset the SUT its initial state before running each test case.
-The driver the uses the harness to run the use cases one by one (after generating required input parameters).
+The driver instructs the harness to reset the SUT to its initial state before running each test case.
+The driver uses the harness to run the use cases one by one (after generating required input parameters).
 After the execution of each use case, the current state of the SUT is compared to the expected state of the system. 
 Inconsistencies result in a failed test, and test execution stops. Otherwise, the next use case is executed.
 Fig.~\ref{fig:test-driver-workflow} shows this workflow.

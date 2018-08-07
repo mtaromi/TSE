@@ -2,11 +2,11 @@
 % 	Farmework in Action: Test Generation and Execution
 %
 \label{sec:test-generation-execution}
-The previous section introduces the required models and explains how to produce them. This section explains the test generation and execution workflow. The testing framework has been built upon Alloy~\cite{Jackson2002} and the Alloy Analyser (AA)~\cite{Jackson2000} with the aim of testing a system at the use case level (i.e.,\ acceptance testing). AA provides automatic analysis of Alloy specifications by generating instances that satisfy the constraints expressed in the specification.
+The previous section introduces the required models and explains how to produce them. This section explains the test generation and execution workflow. \this~has been built upon Alloy~\cite{Jackson2002} and the Alloy Analyser (AA)~\cite{Jackson2000} with the aim of testing a system at the use case level (i.e.,\ acceptance testing). AA provides automatic analysis of Alloy specifications by generating instances that satisfy the constraints expressed in the specification.
 
-The key idea behind the framework is to use Alloy to express the structural and behavioural model of the system specifying the use cases, the invariants of inputs and outputs, and pre-/post-conditions of executing use cases on the system under test. In this context, all the test models, introduced in the previous section, are automatically translated into Alloy specifications which are then used by AA to automatically generate, for a given scope, all non-isomorphic~\cite{Shlyakhter2007} instances for that specification. Next, the testing framework translates these instances to real execution paths and concrete inputs, which form the executable test cases for the SUT.
+The key idea behind \this~is to use Alloy to express the structural and behavioural model of the system specifying the use cases, the invariants of inputs and outputs, and pre-/post-conditions of executing use cases on the SUT. In this context, all the test models, introduced in the previous section, are automatically translated into Alloy specifications which are then used by AA to automatically generate all non-isomorphic~\cite{Shlyakhter2007} instances for that specification, for a given scope. Next, the testing framework translates these instances to real execution paths and concrete inputs, which form the executable test cases for the SUT.
 
-In the following, we first describe the basics of the Alloy specification language and the Alloy Analyser; details can be found in~\cite{Jackson2000,Jackson2002,Jackson2012}. Then, we explain the model transformations into Alloy.
+In the following, we first describe the basics of the Alloy specification language and the Alloy Analyser; details can be found in~\cite{Jackson2000,Jackson2002,Jackson2012}. Then, we explain the detailed structure of generated Alloy models.
 
 \subsection{Alloy}
 \label{sec:test-generation-execution-alloy}
@@ -16,7 +16,7 @@ A \textit{signature} paragraph represents a basic (or uninterpreted) type and in
 
 The Alloy Analyser~\cite{Jackson2000} is an automatic tool for analysing models created in Alloy. Given a formula and a \textit{scope}--a bound on the number of atoms in the universe--the analyser determines whether there exists a model of the formula (that is, an assignment of values to the sets and relations that makes the formula true) that uses no more atoms than the scope permits, and if so, returns it. Since first order logic is undecidable, the analyser limits its analysis to a finite scope. The analysis is based on a translation to a boolean satisfaction problem, and gains its power by exploiting state-of-the-art SAT solvers. The models of formulae are termed \textit{instances} or \textit{solutions}. Each atom is in a signature and the relations between atoms are instances of their fields.
 
-\subsection{Generated Alloy Model}
+\subsection{Generated Alloy Modules}
 \label{sec:test-generation-execution-alloy-models}
 The test models described in Section~\ref{sec:framework-overview} are automatically translated into Alloy specifications consisting of six \texttt{modules}, that are defined in separate Alloy files (.als). These modules and their dependencies are shown in Fig.~\ref{fig:alloy-specifications}, and include:
 
@@ -36,11 +36,11 @@ The test models described in Section~\ref{sec:framework-overview} are automatica
 \label{fig:alloy-specifications}
 \end{figure}
 
-The rest of this section describes the details of the model transformation for each module.
+%The rest of this section describes the details of the model transformation for each module.
 
 \subsection{Structure Model}
 \label{sec:alloy-structure}
-The EMF model of the system is automatically translated into an Alloy specification, using the Xpand\footnote{Xpand – \url{http://eclipse.org/modeling/m2t/?project=xpand}} model-to-text transformation language. Fig.~\ref{fig:library-alloy-structure} shows the automatically generated Alloy specification for the structure of the example library system. Each class is translated into a signature. Each association is represented by a field in the respective signature (lines 9-11 and lines 17-19). The multiplicity of a relation affects the definition of the fields. Abstract signatures are used for modelling abstract classes. Class inheritance is implemented using the inheritance concept in Alloy.
+The EMF model of the system is automatically translated into Alloy, using the Xpand\footnote{Xpand – \url{http://eclipse.org/modeling/m2t/?project=xpand}} model-to-text transformation language. Fig.~\ref{fig:library-alloy-structure} shows the automatically generated Alloy specification for the structure of the example library system. Each class is translated into a signature. Each association is represented by a field in the respective signature (lines 9-11 and lines 17-19). The multiplicity of a relation affects the definition of the fields. Abstract signatures are used for modelling abstract classes. Class inheritance is implemented using the inheritance concept in Alloy.
 
 \begin{figure}[h]
 \centering
@@ -51,7 +51,7 @@ The EMF model of the system is automatically translated into an Alloy specificat
 
 %\subsubsection{State}
 %\label{sec:alloy-state}
-Alloy does not have a built-in notion of mutable state; it does not allow changes to the relations, whereas, in the context of testing, the domain model changes with the execution of use cases. Consequently, our approach models the concept of mutable state  explicitly. A typical way to deal with this is defining a \texttt{state} signature and all the relations that would change during test executions are placed in a relation with an atom of \texttt{state}. The transformation adds the extension \texttt{-> State} at the end of the changing relations.
+Alloy does not have a built-in notion of mutable state; it does not allow changes to the relations, whereas, in the context of testing, the domain model changes with the execution of use cases. Consequently, \this~models the concept of mutable state explicitly. A typical way to deal with this is defining a \texttt{state} signature and all the relations that would change during test executions are placed in a relation with an atom of \texttt{state}. The transformation adds the extension \texttt{-> State} at the end of the changing relations.
 
 The \texttt{System} signature represents the system under test and tracks the objects that in the domain model at any time. The transformation defines a field for each concrete class in the domain model (e.g.,\ Fig.~\ref{fig:library-alloy-structure}, lines 1-4).
 
@@ -96,7 +96,7 @@ The predicate of a use case may also contains 1) a part for defining variables (
 \label{fig:library-alloy-add-member-predicate}
 \end{figure}
 
-In addition to the corresponding predicate, the transformation produces a predicate with the prefix \textbf{fail\_}. This predicate is similar to the main predicate except that it does not define the post-conditions and the new objects, as it is only used to generate a state where the pre-conditions are falsified. This predicate can be used to test the system is capable of detecting when use cases are not allowed to run.
+In addition to the corresponding predicate, the transformation produces a predicate with the prefix \textbf{fail\_}. This predicate is similar to the main predicate except that it does not define the post-conditions and the new objects, as it is only used to generate a state where the pre-conditions are falsified. This predicate can be used to test the system for  detecting when use cases are not allowed to run.
 
 Additionally, it is possible to define different execution paths for a use case. In this case, an abstract signature is defined for the use case and for each execution path a concrete signature is defined. 
 
@@ -113,7 +113,7 @@ For transforming the initial state model into an Alloy specification, the transf
 
 \subsection{Labels Rules}
 \label{sec:alloy-labels-rules}
-The Alloy specification for the object labels rules are generated from our Java-based DSL introduced in Section~\ref{sec:subsidiary-models-object-labels}. Fig.~\ref{fig:library-alloy-labels-rules} shows the translation of the model in Fig.~\ref{fig:library-object-labels}.
+The Alloy specification for the object labels rules are generated from \this~Java-based DSL, introduced in Section~\ref{sec:subsidiary-models-object-labels}. Fig.~\ref{fig:library-alloy-labels-rules} shows the translation of the model in Fig.~\ref{fig:library-object-labels}.
 
 \begin{figure}[h]
 \centering
@@ -136,7 +136,7 @@ The partitions of the input domain are also specified in Alloy. The specificatio
 
 \subsection{Main Module and Test Goals}
 \label{sec:alloy-main-module}
-The main module is static and is independent of the SUT and its models. The module is depicted in Fig.~\ref{fig:alloy-main-module}. In the beginning, the module is defined and other modules are opened (lines 1-7). Then, the signatures for the system states and the abstract signature \texttt{Op}, used for tracing use cases, are defined (lines 9-12). Next, lines 15-17 require for all states, excluding the final state, a use case has to be executed. The predicate \texttt{apply} (given in Fig.~\ref{fig:alloy-main-apply}) decides which predicate (corresponding to the use cases), has to be applied to the model. Line 19 enforces the label rules and line 20 constricts the state space and forbids the creation of useless \texttt{Op} atoms. Lines 25-27 describe the initial state of the system. The search scope is defined in lines 29-30. Optional, user-defined constraints in the Alloy model can be added in the \texttt{testSystem} predicate. In this example, the search scope is 5 atoms for all signature, excluding atoms of the \texttt{State} signature (line 30). The scope for the \texttt{State} signature is 4, which results in execution traces of length three (one state is needed for the initial state).
+The main module is static and is independent of the SUT and its models. This module is depicted in Fig.~\ref{fig:alloy-main-module}. In the beginning, the module is defined and other modules are opened (lines 1-7). Then, the signatures for the system states and the abstract signature \texttt{Op}, used for tracing use cases, are defined (lines 9-12). Next, lines 15-17 require for all states, excluding the final state, a use case has to be executed. The predicate \texttt{apply} (given in Fig.~\ref{fig:alloy-main-apply}) decides which predicate (corresponding to the use cases), has to be applied to the model. Line 19 enforces the label rules and line 20 constricts the state space and forbids the creation of useless \texttt{Op} atoms. Lines 25-27 describe the initial state of the system. The search scope is defined in lines 29-30. Optional, user-defined constraints in the Alloy model can be added in the \texttt{testSystem} predicate. In this example, the search scope is 5 atoms for all signature, excluding atoms of the \texttt{State} signature (line 30). The scope for the \texttt{State} signature is 4, which results in execution traces of length three (one state is needed for the initial state).
 
 \begin{figure}[h]
 \centering

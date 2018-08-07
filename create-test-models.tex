@@ -2,7 +2,7 @@
 % 	Creating Test Models
 %
 \label{sec:create-test-model}
-The framework relies on the tester to provide the primary and subsidiary models. This section describes how these required models are created or generated in the context of the example library system. %It also covers some implementation aspects.?
+\this~relies on the tester to provide the primary and subsidiary models. This section describes how these required models are created or generated in the context of the example library system. 
 
 \subsection{Structural Model}
 \label{sec:create-test model-structure}
@@ -24,7 +24,7 @@ The Eclipse IDE\footnote{Eclipse - \url{http://eclipse.org}}, is capable of tran
 \subsection{Behavioural Model}
 \label{sec:create-test model-behaviour}
 
-The behavoiral model allows the tester to describe the effect of each use case on domain objects in terms of their labels and their relations. Labels can be identified by considering the state-based behaviour of the system, as implied by use cases. For example, in the library system, the class \texttt{Book} has two labels: \textit{Borrowed} and \textit{NotBorrowed}, and the class \texttt{Member} has three labels: \textit{HasNotBorrowed}, \textit{CanBorrow}, and \textit{CanNotBorrow}. Fig.~\ref{fig:library-object-labels} shows the labels and illustrates how they relate to use cases. Fig.~\ref{fig:library-usecase-borrow-book} shows the description of ``Borrow Book" use case using the DSL. 
+The behavoiral model allows the tester to describe the effect of each use case on domain objects in terms of their labels and their relations. Labels can be identified by considering the state-based behaviour of the system, as implied by use cases. For example, in the library system, the class \texttt{Book} has two labels: \textit{Borrowed} and \textit{NotBorrowed}, and the class \texttt{Member} has three labels: \textit{HasNotBorrowed}, \textit{CanBorrow}, and \textit{CanNotBorrow}. Fig.~\ref{fig:library-object-labels} shows the labels and illustrates how they relate to use cases. Fig.~\ref{fig:library-usecase-borrow-book} shows the description of ``Borrow Book" use case using \this~internal  DSL. 
 
 \begin{figure}[h]
 \centering
@@ -55,10 +55,10 @@ A specific state (line 9) or an arbitrary state (line 10) may be specified. Chan
 
 \subsection{Test Data}
 \label{sec:create-test model-data}
-This sections describes how data is generated for use cases that need input data. As mentioned in Section~\ref{sec:framework-overview-test-data}, we use the input partitioning approach for data generation. The partitioning of input parameters are defined by the tester, based on the system requirements, and are introduced to the framework. For example, the ``Add Book" use case requires the input parameter \textit{bookName} to be automatically generated. A book name is a string that has ``empty", ``duplicate", and ``unique" partitions.
+This sections describes how data is generated for use cases that need input data. As mentioned in Section~\ref{sec:framework-overview-test-data}, we use the input partitioning approach for data generation. The partitioning of input parameters are defined by the tester, based on the system requirements, and are introduced to \this. For example, the ``Add Book" use case (Fig.~\ref{fig:library-usecase-add-book}) requires the input parameter \texttt{bookName} to be automatically generated. A book name is a string that could be, for example, \textit{empty}, \textit{unique}, or \textit{nonUnique}--which introduce a partitioning for the book name.
 
-\todo{this is way more detail than anyone would ever care about, also the code isn't that useful, can we cut this?}
-An input data type is defined by implementing the \texttt{DataFactory} interface in which each partition is represented by a method annotated as \texttt{@Partition} and returns an object of type \texttt{PartitionDescription}. Fig.~\ref{fig:library-bookname} shows the definition of the \texttt{BookName} data type and its partitions, namely ``empty", ``unique", and ``nonUnique" (lines 31-41). Each partition extends  \texttt{PartitionDescription} and implements the \texttt{generate} method that is the main method for generating data for that partition. For example, lines 2-6 introduce the ``empty" partition that returns an \textit{empty} string in its \texttt{generate} method.
+\todo{this is way more detail than anyone would ever care about, also the code isn't that useful, can we cut this?}\todo{@Masoumeh: we can move the code into the Appendix and summaries these paragraphs. But, I guess similar to other sections it would be good to keep the code and summarise. Is that ok?}
+An input data type is defined by implementing the \texttt{DataFactory} interface in which each partition is represented by a method annotated as \texttt{@Partition} and returns an object of type \texttt{PartitionDescription}. Fig.~\ref{fig:library-bookname} shows the definition of the \texttt{BookName} data type and its partitions, namely ``empty", ``unique", and ``nonUnique" (lines 31-41). Each partition extends \texttt{PartitionDescription} and implements the \texttt{generate} method that is the main method for generating data for that partition. For example, lines 2-6 introduce the \texttt{EmptyPD} partition that returns an \textit{empty} string in its \texttt{generate} method.
 
 \begin{figure}[h]
 \centering
@@ -71,7 +71,7 @@ An input data type is defined by implementing the \texttt{DataFactory} interface
 \label{fig:library-bookname}
 \end{figure} 
 
-If the data generation requires access to the domain objects, this dependency is specified in the \texttt{getDataParams} method that returns a list of required objects. This list is then passed to the \texttt{generate} method, in addition to the \texttt{SoftwareSystem} object. The data generation for the ``nonUnique" partition, in Fig.~\ref{fig:library-bookname}, requires a book name that already exists in the system. This is done in lines 18-21 and the returned object that is used in the \texttt{generate} method, lines 24-28, as the generated (non-unique) book name. Fig.~\ref{fig:library-usecase-add-book} shows how a data type and its partitioning are used in modelling a use case. In line 4, calling the method \texttt{input} and referring to the \texttt{BookName} data type define a parameter for the use case. The method \texttt{inPartition} restricts the permissible partitions for that parameter.
+If the data generation requires access to the domain objects, this dependency is specified in the \texttt{getDataParams} method that returns a list of required objects. This list is then passed to the \texttt{generate} method, in addition to the \texttt{SoftwareSystem} object. The data generation for the ``nonUnique" partition, in Fig.~\ref{fig:library-bookname}, requires a book name that already exists in the system. This is done in lines 18-21 and the returned object that is used in the \texttt{generate} method, lines 24-28, is the generated (non-unique) book name. Fig.~\ref{fig:library-usecase-add-book} shows how a data type and its partitioning are used in modelling a use case. In line 4, calling the method \texttt{input} and referring to the \texttt{BookName} data type define a parameter for the use case. The method \texttt{inPartition} restricts the permissible partitions for that parameter.
 
 \begin{figure*}[h]
 \centering
@@ -85,7 +85,7 @@ If the data generation requires access to the domain objects, this dependency is
 
 %\subsubsection{Introducing the SUT}
 %\label{sec:test-harness-intro-SUT}
-Testers implement the \texttt{SoftwareSystem} interface to introduce an SUT to the framework.
+Testers implement the \texttt{SoftwareSystem} interface to introduce the SUT to \this.
 This object provides methods for executing commands and inspection. The \texttt{SoftwareSystem} interface includes a \texttt{reset} method, which is responsible for bringing the system into its initial state. %This interface and its implementation for the example library system are shown in Fig.~\ref{fig:library-SUT}.\todo{doesn't really add value}
 
 %\begin{figure}[h]
@@ -98,7 +98,7 @@ This object provides methods for executing commands and inspection. The \texttt{
 
 \subsubsection{Inspection}
 \label{sec:test-harness-inspection}
-The test harness must return a list of the existing objects and their associated labels for each class in the domain model. Each object has a unique identifier (ID) managed by the test harness and the SUT. Accordingly, an abstract super class (\texttt{AbstractDomainObjInspector})  is provided that is inherited by the test harness. Fig.~\ref{fig:library-inspector} shows an example implementation of this super class and the inspector for the \texttt{Member} class.
+The test harness must provide a list of the existing objects and their associated labels for each class in the domain model. Each object has a unique identifier (ID) managed by the test harness and the SUT. Accordingly, an abstract super class (\texttt{AbstractDomainObjInspector})  is provided that is inherited by the test harness. Fig.~\ref{fig:library-inspector} shows an example implementation of this super class and the inspector for the \texttt{Member} class.
 
 \begin{figure}[h]
 \centering
@@ -107,12 +107,12 @@ The test harness must return a list of the existing objects and their associated
 \label{fig:library-inspector}
 \end{figure}
 
-\todo{way too much detail..}
+\todo{way too much detail..} \todo{@Masoumeh: summarise or remove?}
 The \texttt{@Inspector} annotation with the name of the target \texttt{type} (line 1) allows the framework to identify the inspector for the target domain class (e.g., ``Member" in Fig.~\ref{fig:library-inspector}) . The constructor, line 5-7, takes an object implementing \texttt{SoftwareSystem}. The \texttt{getObjectState} returns the labels of the object with the input ID, and the \texttt{getObjectList} returns the IDs of all the objects of the target type. The body of these two methods are implemented for the SUT.
 
 \subsubsection{Command Execution}
 \label{sec:test-harness-command-execution}
-The test harness implements the \texttt{Command} interface (Fig.~\ref{fig:test-harness-command-interface}) for each use case so that it is possible to run the test cases on the SUT. Each use case description class has an \texttt{execute} method that returns an object of type \texttt{Command}. Calling this method would not execute the use case, it just creates a \texttt{Command} object which, later on, is used for test case execution by the framework during the test execution process.
+The test harness implements the \texttt{Command} interface (Fig.~\ref{fig:test-harness-command-interface}) for each use case so that it is possible to run the test cases on the SUT. Each use case description class has an \texttt{execute} method that returns an object of type \texttt{Command}. Calling this method would not execute the use case, it just creates a \texttt{Command} object which, later on, is used for test case execution by \this~during the test execution process.
 
 \begin{figure}[h]
 \centering
@@ -130,7 +130,7 @@ An implementation of the \texttt{command} method, for the ``Borrow Book" use cas
 \label{fig:library-borrow-book-execute}
 \end{figure*}
 
-Fig.~\ref{fig:library-usecase-add-book} shows how a data type is used in defining the implementation of the \texttt{execute} method (or creating the \texttt{command} object) for the ``Add Book" use case which requires an input parameter.  In line 8, the input parameter is passed to the \texttt{execute} method, as an object of type \texttt{InputParam} which has a \texttt{generate} method (line 12). Calling this method will call the \texttt{generate} method of the related partition and hence, results in generating appropriate test data. 
+Fig.~\ref{fig:library-usecase-add-book} (lines 8-17) shows how a data type is used in the implementation of the \texttt{execute} method (or creating the \texttt{command} object) for the ``Add Book" use case which requires an input parameter.  In line 8, the input parameter is passed to the \texttt{execute} method, as an object of type \texttt{InputParam} which has a \texttt{generate} method (line 12). Calling this method will call the \texttt{generate} method of the related partition and hence, results in generating appropriate test data. 
 
 \subsection{Subsidiary Models}
 \label{sec:create-test model-subsidiary-models}
@@ -151,7 +151,7 @@ This model specifies the objects in the initial state, with their labels and the
 \subsubsection{Object Labels Rules}
 \label{sec:subsidiary-models-object-labels}
 Some constraints on relations (e.g., number of involved objects in a relation) cannot be specified in the behavioural model. For example, in the modelling of the post-conditions of the ``Borrow Book" use case (Fig.~\ref{fig:library-usecase-borrow-book}), the label of the object \texttt{thisMember} can not be determined a-priori to use case execution. 
-Such dependencies are defined a subsidiary model. Fig.~\ref{fig:library-rules-member} illustrates the rules applicable to the ``Member" class and its labels. In line 3, the \texttt{setFor} method specifies the class the rules apply to. Line 4 indicates that if the given relation (\texttt{MEMBER\_BORROW}) is empty then the label is \texttt{HasNotBorrowed}. Similarly, line 5 says if the cadinality of the given relation (\texttt{MEMBER\_BORROW}) is equal or greater than two then the label is \texttt{CanNotBorrowed}. Line 6 indicates that the label would be \texttt{CanBorrow} if none of the other cases apply.
+Such dependencies are defined in a subsidiary model. Fig.~\ref{fig:library-rules-member} illustrates the rules applicable to the ``Member" class and its labels. In line 3, the \texttt{setFor} method specifies the class the rules apply to. Line 4 indicates that if the given relation (\texttt{MEMBER\_BORROW}) is empty then the label is \texttt{HasNotBorrowed}. Similarly, line 5 says if the cadinality of the given relation (\texttt{MEMBER\_BORROW}) is equal or greater than two then the label is \texttt{CanNotBorrowed}. Line 6 indicates that the label would be \texttt{CanBorrow} if none of the other cases apply.
 
 \begin{figure}[h]
 \centering
@@ -163,7 +163,7 @@ Such dependencies are defined a subsidiary model. Fig.~\ref{fig:library-rules-me
 \subsection{Introducing the Models to the Framework}
 \label{sec:create-test model-introducing-models}
 Each category of models described above is introduced to the framework by placing them in a package together.
-The testing framework determines the name of this package by calling methods of the \texttt{SUT} interface (Fig.~\ref{fig:SUT-interface}), then finds the required classes (and methods) using Java reflection.
+\this~determines the name of this package by calling methods of the \texttt{SUT} interface (Fig.~\ref{fig:SUT-interface}), then finds the required classes (and methods) using Java reflection.
 
 \begin{figure}[h]
 \centering
@@ -171,3 +171,5 @@ The testing framework determines the name of this package by calling methods of 
 \caption{\texttt{SUT} interface.}
 \label{fig:SUT-interface}
 \end{figure}
+
+Given the primary and subsidiary models, \this~automatically  translates them into Alloy specifications used for test generation, by the Alloy Analyser. The next section details the structure of generated Alloy models.

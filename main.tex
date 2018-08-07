@@ -369,6 +369,7 @@
 %\usepackage[disable]{todonotes}
 \usepackage{todonotes}
 
+\newcommand{\this}{\textrm{LiMoAT}}
 \begin{document}
 %
 % paper title
@@ -479,8 +480,8 @@ Model-Based Testing (MBT) avoids this bias by taking a systematic approach to te
 However, MBT requires models not usually developed in normal development processes.
 These models must then be kept up to date with changes to code, a practice agile development approaches often avoid.
 
-This paper shows how a minimal set of structural and behavioral models can be used to automatically generate acceptance tests. We begin by choosing models intuitive and familiar to ordinary practitioners, then describe the process of transforming them
-to executable test cases.
+In this paper, we present \this, a lightweight testing framework. \this~employs a minimal set of structural and behavioral models that can be used to automatically generate acceptance tests. The models are intuitive and familiar to ordinary practitioners and, thus, are appropriate for lightweight processes.
+Having models translated into the target language, a formal analyser () is used to find valid execution traces of the system, that are ultimately transformed into executable test cases.
 
 A non-trivial case study demonstrates the feasibility of the proposed approach. 
 We compare conventional test quality metrics (e.g.\, line coverage, mutation score) to those of manually developed tests.
